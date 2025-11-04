@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mermaid Sequence Diagram Editor with Custom Actors</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+      margin: 0;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h1 {
+      margin-top: 0;
+      color: #333;
+    }
+    .section {
+      margin-bottom: 25px;
+    }
+    .section h3 {
+      margin-top: 0;
+      color: #555;
+      font-size: 16px;
+    }
+    textarea { 
+      width: 100%; 
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      resize: vertical;
+    }
+    #code {
+      height: 150px;
+    }
+    #actorConfig {
+      height: 120px;
+    }
+    button { 
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-right: 10px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    button.secondary {
+      background: #6c757d;
+    }
+    button.secondary:hover {
+      background: #545b62;
+    }
+    #diagram { 
+      border: 1px solid #ddd; 
+      margin-top: 20px; 
+      padding: 20px;
+      min-height: 300px;
+      background: white;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    .help-text {
+      font-size: 13px;
+      color: #666;
+      margin-top: 5px;
+    }
+    .example-link {
+      color: #007bff;
+      cursor: pointer;
+      text-decoration: underline;
+      font-size: 13px;
+    }
+    .example-link:hover {
+      color: #0056b3;
+    }
+    .actor-image {
+      border-radius: 50%;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .upload-section {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+    }
+    .actor-upload-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .actor-upload-row input[type="text"] {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .actor-upload-row input[type="file"] {
+      flex: 2;
+      font-size: 13px;
+    }
+    .actor-upload-row button {
+      padding: 8px 12px;
+      margin: 0;
+    }
+    .preview-images {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+    .preview-item {
+      text-align: center;
+    }
+    .preview-item img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #ddd;
+      display: block;
+      margin-bottom: 5px;
+    }
+    .preview-item span {
+      font-size: 12px;
+      color: #666;
+    }
+    .button-small {
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+    .error-box {
+      background: #fee;
+      border: 1px solid #fcc;
+      border-radius: 4px;
+      padding: 15px;
+      margin: 15px 0;
+      color: #c33;
+    }
+    .error-box h4 {
+      margin: 0 0 10px 0;
+      color: #a00;
+    }
+    .error-box pre {
+      background: #fff;
+      padding: 10px;
+      border-radius: 3px;
+      overflow-x: auto;
+      font-size: 12px;
+      margin: 10px 0 0 0;
+    }
+    .success-box {
+      background: #efe;
+      border: 1px solid #cfc;
+      border-radius: 4px;
+      padding: 10px 15px;
+      margin: 15px 0;
+      color: #060;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎨 Mermaid Sequence Diagram Editor</h1>
+    <p>Create sequence diagrams with custom actor images</p>
+
+
+    <div class="section">
+      <h3>Upload Local Images</h3>
+      <div class="upload-section">
+        <div id="uploadRows">
+          <div class="actor-upload-row">
+            <input type="text" placeholder="Actor Name (e.g., consumer)" class="actor-name-input">
+            <input type="file" accept="image/*" class="actor-image-input">
+          </div>
+        </div>
+        <button class="button-small" onclick="addUploadRow()">+ Add Another Actor</button>
+        <button class="button-small" onclick="processUploads()">📁 Load Images</button>
+        <div class="preview-images" id="previewImages"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Actor Image Configuration (JSON)</h3>
+      <textarea id="actorConfig" placeholder='{"consumer": "https://www.sampleImage.com", "mastercard": "https://www.sampleImage2.com"}'></textarea>
+      <div class="help-text">
+        Auto-generated from uploaded images, or enter URLs manually<br>
+        <span class="example-link" onclick="loadPreset('avatars')">Load example with avatars</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Mermaid Diagram Code</h3>
+      <textarea id="code">sequenceDiagram
+  participant Alice
+  participant Bob
+  Alice->>Bob: Hello Bob!
+  Bob->>Alice: Hi Alice!</textarea>
+      <div class="help-text">
+        Edit your Mermaid sequence diagram code
+      </div>
+    </div>
+
+    <div class="controls">
+      <button onclick="renderDiagram()">🎨 Render Diagram</button>
+      <button class="secondary" onclick="clearImages()">Clear Images</button>
+      <button class="secondary" onclick="downloadSVG()">⬇️ Download SVG</button>
+      <button class="secondary" onclick="downloadPNG()">⬇️ Download PNG</button>
+      <label style="display: flex; align-items: center; gap: 8px; margin-left: 10px;">
+        <input type="checkbox" id="showBottomActors" checked onchange="renderDiagram()">
+        <span>Show actors at bottom</span>
+      </label>
+    </div>
+    <div class="help-text" style="margin-top: 5px;">
+      <strong>Note:</strong> PNG export works best with locally uploaded images. External URLs may not appear due to browser security (CORS). Use SVG export as an alternative.
+    </div>
+
+    <div id="errorDisplay"></div>
+    <div id="successDisplay" class="success-box"></div>
+    <div id="diagram"></div>
+  </div>
+
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11.6.0/dist/mermaid.esm.min.mjs';
+    
+    mermaid.initialize({ 
+      startOnLoad: false,
+      theme: 'default',
+      sequence: {
+        actorMargin: 80,
+        width: 150,
+        height: 100
+      }
+    });
+
+    window.renderDiagram = async function () {
+      const code = document.getElementById('code').value;
+      const actorConfigText = document.getElementById('actorConfig').value.trim();
+      const diagram = document.getElementById('diagram');
+      const errorDisplay = document.getElementById('errorDisplay');
+      const successDisplay = document.getElementById('successDisplay');
+      
+      // Clear previous messages
+      errorDisplay.innerHTML = '';
+      successDisplay.style.display = 'none';
+      
+      let actorImages = {};
+      
+      // Parse actor configuration
+      if (actorConfigText) {
+        try {
+          actorImages = JSON.parse(actorConfigText);
+        } catch (err) {
+          showError('JSON Configuration Error', 
+            'Invalid JSON in Actor Configuration. Please check your syntax.',
+            err.message);
+          return;
+        }
+      }
+      
+      // Validate Mermaid code
+      if (!code.trim()) {
+        showError('Empty Diagram', 
+          'Please enter Mermaid diagram code.',
+          'The code textarea is empty.');
+        return;
+      }
+      
+      try {
+        // Render the diagram with unique ID to avoid caching
+        const uniqueId = 'mermaidDiagram-' + Date.now();
+        const { svg } = await mermaid.render(uniqueId, code);
+        diagram.innerHTML = svg;
+        
+        
+        
+        // Apply custom images if configured
+        if (Object.keys(actorImages).length > 0) {
+          // Small delay to ensure DOM is ready
+          setTimeout(() => {
+            try {
+              applyCustomActorImages(actorImages);
+              showSuccess('✓ Diagram rendered successfully with custom images!');
+            } catch (err) {
+              showError('Image Application Error', 
+                'The diagram rendered, but there was an error applying custom images.',
+                err.message);
+            }
+          }, 10);
+        } else {
+          showSuccess('✓ Diagram rendered successfully!');
+        }
+      } catch (err) {
+        showError('Mermaid Rendering Error', 
+          'There was an error rendering your Mermaid diagram. Please check your syntax.',
+          err.toString());
+        diagram.innerHTML = '';
+      }
+    };
+
+    function showError(title, message, details) {
+      const errorDisplay = document.getElementById('errorDisplay');
+      errorDisplay.innerHTML = `
+        <div class="error-box">
+          <h4>❌ ${title}</h4>
+          <p>${message}</p>
+          ${details ? `<pre>${escapeHtml(details)}</pre>` : ''}
+        </div>
+      `;
+      console.error(title + ':', details);
+    }
+
+    function showSuccess(message) {
+      const successDisplay = document.getElementById('successDisplay');
+      successDisplay.textContent = message;
+      successDisplay.style.display = 'block';
+      
+      // Auto-hide after 3 seconds
+      setTimeout(() => {
+        successDisplay.style.display = 'none';
+      }, 3000);
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function applyCustomActorImages(actorImages) {
+      const svg = document.querySelector('#diagram svg');
+      console.log('SVG element:', svg);
+      
+      if (!svg) {
+        console.error('No SVG found!');
+        return;
+      }
+
+      const showBottomActors = document.getElementById('showBottomActors').checked;
+      console.log('Show bottom actors:', showBottomActors);
+
+      // Find actor rect elements (Mermaid uses rect.actor-top for the top actors)
+      const actorRects = svg.querySelectorAll('rect.actor-top');
+      console.log('Found actor rects:', actorRects.length);
+      
+      // First, build a map of internal names to display labels
+      const nameToLabel = new Map();
+      const allTexts = svg.querySelectorAll('text');
+      allTexts.forEach(text => {
+        const label = text.textContent.trim();
+        // Find the closest rect to this text to get its name attribute
+        const rects = svg.querySelectorAll('rect.actor-top, rect.actor-bottom');
+        rects.forEach(rect => {
+          const rectX = parseFloat(rect.getAttribute('x'));
+          const rectWidth = parseFloat(rect.getAttribute('width'));
+          const textX = parseFloat(text.getAttribute('x'));
+          
+          // Check if text is within the rect's x bounds
+          if (textX >= rectX && textX <= rectX + rectWidth) {
+            const internalName = rect.getAttribute('name');
+            if (internalName && !nameToLabel.has(internalName)) {
+              nameToLabel.set(internalName, label);
+              console.log('Mapped:', internalName, '->', label);
+            }
+          }
+        });
+      });
+      
+      // Track processed actors to avoid duplicates
+      const processedActors = new Set();
+      const actorLineAdjustments = new Map(); // Store line adjustments
+      
+      actorRects.forEach((rect, index) => {
+        const actorName = rect.getAttribute('name');
+        const displayLabel = nameToLabel.get(actorName) || actorName;
+        
+        console.log(`Processing actor ${index}: ${actorName} (displays as: ${displayLabel})`);
+        
+        if (!actorName || processedActors.has(actorName)) {
+          console.log('Skipping (no name or already processed)');
+          return;
+        }
+        
+        // Try to match image by either internal name or display label
+        let imageUrl = actorImages[actorName] || actorImages[displayLabel];
+        
+        console.log('Image URL:', imageUrl ? 'Found' : 'Not found');
+        
+        if (!imageUrl) return;
+        
+        processedActors.add(actorName);
+        
+        // Get rect properties
+        const x = parseFloat(rect.getAttribute('x'));
+        const y = parseFloat(rect.getAttribute('y'));
+        const width = parseFloat(rect.getAttribute('width'));
+        const height = parseFloat(rect.getAttribute('height'));
+        
+        console.log('Rect dimensions:', { x, y, width, height });
+        
+        // Hide the top rect box
+        rect.style.display = 'none';
+        
+        // Create top image and text
+        const imageSize = 60;
+        const imageX = x + (width - imageSize) / 2;
+        const imageY = y + 5;
+        const textY = imageY + imageSize + 18;
+        const textX = x + width / 2;
+        const lineStartY = textY + 20;
+        
+        createActorImageAndText(svg, displayLabel, imageUrl, imageX, imageY, imageSize, textX, textY, index, 'top');
+        
+        // Store the adjustment for this actor
+        actorLineAdjustments.set(actorName, { 
+          startY: lineStartY,
+          endY: null // Will be set later if bottom actors are shown
+        });
+        
+        // Handle bottom actors
+        const bottomRects = svg.querySelectorAll('rect.actor-bottom');
+        bottomRects.forEach(bottomRect => {
+          if (bottomRect.getAttribute('name') === actorName) {
+            // Hide the bottom rect box
+            bottomRect.style.display = 'none';
+            
+            if (showBottomActors) {
+              // Get bottom rect properties
+              const bottomX = parseFloat(bottomRect.getAttribute('x'));
+              const bottomY = parseFloat(bottomRect.getAttribute('y'));
+              const bottomWidth = parseFloat(bottomRect.getAttribute('width'));
+              
+              // Add extra margin (30px) to avoid overlap with autonumbers
+              const extraMargin = 30;
+              
+              // Create bottom image and text (image above, text below)
+              const bottomTextY = bottomY + height - 5 + extraMargin; // Text at the bottom with margin
+              const bottomImageY = bottomTextY - 18 - imageSize; // Image above text
+              const bottomImageX = bottomX + (bottomWidth - imageSize) / 2;
+              const bottomTextX = bottomX + bottomWidth / 2;
+              const lineEndY = bottomImageY - 10;
+              
+              createActorImageAndText(svg, displayLabel, imageUrl, bottomImageX, bottomImageY, imageSize, bottomTextX, bottomTextY, index, 'bottom');
+              
+              // Update the adjustment with end position
+              const adjustment = actorLineAdjustments.get(actorName);
+              if (adjustment) {
+                adjustment.endY = lineEndY;
+              }
+            }
+          }
+        });
+        
+      });
+      
+      // Hide original text elements AFTER processing all actors
+      const textElements = svg.querySelectorAll('text');
+      textElements.forEach(textElement => {
+        // Don't hide our custom text elements
+        if (textElement.classList.contains('actor-custom-text-top') || 
+            textElement.classList.contains('actor-custom-text-bottom')) {
+          return;
+        }
+        
+        const textContent = textElement.textContent.trim();
+        // Hide if this text matches any processed actor
+        processedActors.forEach(actorName => {
+          const displayLabel = nameToLabel.get(actorName) || actorName;
+          if (textContent === displayLabel) {
+            textElement.style.display = 'none';
+          }
+        });
+      });
+      
+      // Now adjust all actor lines with the stored adjustments
+      const actorLines = svg.querySelectorAll('line.actor-line');
+      actorLines.forEach(line => {
+        const lineName = line.getAttribute('name');
+        const adjustment = actorLineAdjustments.get(lineName);
+        
+        if (adjustment) {
+          const originalY2 = parseFloat(line.getAttribute('y2'));
+          
+          // Always adjust y1 (start) to be below the top text
+          line.setAttribute('y1', adjustment.startY);
+          console.log('Set line y1 for', lineName, 'to', adjustment.startY);
+          
+          // For y2 (end):
+          if (showBottomActors && adjustment.endY !== null) {
+            // If bottom actors are shown, end at the calculated position
+            line.setAttribute('y2', adjustment.endY);
+            console.log('Set line y2 for', lineName, 'to', adjustment.endY);
+          } else {
+            // If no bottom actors, extend the line further down from its original position
+            // to ensure it reaches the end of the sequence
+            const extendedY2 = originalY2 + 20; // Extend 20px beyond original
+            line.setAttribute('y2', extendedY2);
+            console.log('Extended line y2 for', lineName, 'from', originalY2, 'to', extendedY2);
+          }
+        }
+      });
+      
+      console.log('Finished applying custom images. Processed:', processedActors.size, 'actors');
+      
+      // Extend the SVG viewBox if bottom actors are shown to accommodate extra margin
+      if (showBottomActors && processedActors.size > 0) {
+        const viewBox = svg.getAttribute('viewBox');
+        if (viewBox) {
+          const [minX, minY, width, height] = viewBox.split(' ').map(parseFloat);
+          const newHeight = height + 30; // Add the extra margin
+          svg.setAttribute('viewBox', `${minX} ${minY} ${width} ${newHeight}`);
+          console.log('Extended viewBox height to accommodate bottom actors');
+        }
+      }
+    }
+
+    function createActorImageAndText(svg, actorName, imageUrl, imageX, imageY, imageSize, textX, textY, index, position) {
+      // Create image element
+      const image = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+      image.setAttributeNS('http://www.w3.org/1999/xlink', 'href', imageUrl);
+      image.setAttribute('x', imageX);
+      image.setAttribute('y', imageY);
+      image.setAttribute('width', imageSize);
+      image.setAttribute('height', imageSize);
+      image.setAttribute('class', `actor-custom-image-${position}`);
+      
+      // Create a circle clipPath for round images
+      const clipId = `clip-${actorName.replace(/\s/g, '-')}-${position}-${Date.now()}-${index}`;
+      let defs = svg.querySelector('defs');
+      if (!defs) {
+        defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+        svg.insertBefore(defs, svg.firstChild);
+      }
+      
+      const clipPath = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
+      clipPath.setAttribute('id', clipId);
+      
+      const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circle.setAttribute('cx', imageX + imageSize / 2);
+      circle.setAttribute('cy', imageY + imageSize / 2);
+      circle.setAttribute('r', imageSize / 2);
+      
+      clipPath.appendChild(circle);
+      defs.appendChild(clipPath);
+      image.setAttribute('clip-path', `url(#${clipId})`);
+      
+      // Create text element
+      const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      text.textContent = actorName;
+      text.setAttribute('y', textY);
+      text.setAttribute('x', textX);
+      text.setAttribute('text-anchor', 'middle');
+      text.setAttribute('class', `actor-custom-text-${position}`);
+      text.style.fontWeight = '600';
+      text.style.fontSize = '14px';
+      text.style.fill = '#333';
+      text.style.fontFamily = 'Arial, sans-serif';
+      
+      // Append to SVG
+      svg.appendChild(image);
+      svg.appendChild(text);
+      
+      console.log(`Created ${position} image and text for`, actorName, 'at', { imageX, imageY, textX, textY });
+    }
+
+    window.clearImages = function() {
+      document.getElementById('actorConfig').value = '';
+      document.getElementById('previewImages').innerHTML = '';
+      renderDiagram();
+      showSuccess('✓ Images cleared!');
+    };
+
+    // Preset configurations
+    const presets = {
+      business: {
+        name: "Business Team",
+        actors: {
+          "CEO": "https://i.pravatar.cc/150?img=12",
+          "Manager": "https://i.pravatar.cc/150?img=33",
+          "Developer": "https://i.pravatar.cc/150?img=68",
+          "Designer": "https://i.pravatar.cc/150?img=47"
+        },
+        code: `sequenceDiagram
+  participant CEO
+  participant Manager
+  participant Developer
+  participant Designer
+  CEO->>Manager: Approve project
+  Manager->>Developer: Assign tasks
+  Manager->>Designer: Request designs
+  Designer-->>Manager: Deliver mockups
+  Developer-->>Manager: Implementation done
+  Manager-->>CEO: Project complete`
+      },
+      tech: {
+        name: "Tech Team",
+        actors: {
+          "Frontend": "https://i.pravatar.cc/150?img=59",
+          "Backend": "https://i.pravatar.cc/150?img=13",
+          "Database": "https://i.pravatar.cc/150?img=27",
+          "DevOps": "https://i.pravatar.cc/150?img=51"
+        },
+        code: `sequenceDiagram
+  participant Frontend
+  participant Backend
+  participant Database
+  participant DevOps
+  Frontend->>Backend: API Request
+  Backend->>Database: Query data
+  Database-->>Backend: Return results
+  Backend-->>Frontend: JSON Response
+  Frontend->>DevOps: Deploy to production
+  DevOps-->>Frontend: Deployment successful`
+      },
+      aiagents: {
+        name: "AI Agents",
+        actors: {
+          "User": "https://api.dicebear.com/7.x/avataaars/svg?seed=user",
+          "ChatBot": "https://api.dicebear.com/7.x/bottts/svg?seed=chatbot&backgroundColor=b6e3f4",
+          "AI Assistant": "https://api.dicebear.com/7.x/bottts/svg?seed=assistant&backgroundColor=c0aede",
+          "ML Model": "https://api.dicebear.com/7.x/bottts/svg?seed=model&backgroundColor=d1d4f9",
+          "DataAgent": "https://api.dicebear.com/7.x/bottts/svg?seed=data&backgroundColor=ffd5dc"
+        },
+        code: `sequenceDiagram
+  participant User
+  participant ChatBot
+  participant AI Assistant as AI Assistant
+  participant ML Model as ML Model
+  participant DataAgent
+  User->>ChatBot: Send query
+  ChatBot->>AI Assistant: Process request
+  AI Assistant->>ML Model: Get prediction
+  ML Model->>DataAgent: Fetch training data
+  DataAgent-->>ML Model: Return dataset
+  ML Model-->>AI Assistant: Return prediction
+  AI Assistant-->>ChatBot: Generate response
+  ChatBot-->>User: Display answer`
+      },
+      avatars: {
+        name: "Avatar Set",
+        actors: {
+          "Alice": "https://i.pravatar.cc/150?img=1",
+          "Bob": "https://i.pravatar.cc/150?img=13",
+          "Charlie": "https://i.pravatar.cc/150?img=33",
+          "Diana": "https://i.pravatar.cc/150?img=5"
+        },
+        code: `sequenceDiagram
+  participant Alice
+  participant Bob
+  participant Charlie
+  participant Diana
+  Alice->>Bob: Hello Bob!
+  Bob->>Charlie: Hey Charlie!
+  Charlie->>Diana: Hi Diana!
+  Diana-->>Alice: Nice to meet everyone!`
+      },
+      custom: {
+        name: "Custom Template",
+        actors: {
+          "Actor1": "https://via.placeholder.com/150/FF6B6B/FFFFFF?text=Actor1",
+          "Actor2": "https://via.placeholder.com/150/4ECDC4/FFFFFF?text=Actor2",
+          "Actor3": "https://via.placeholder.com/150/45B7D1/FFFFFF?text=Actor3"
+        },
+        code: `sequenceDiagram
+  participant Actor1
+  participant Actor2
+  participant Actor3
+  Actor1->>Actor2: Message 1
+  Actor2->>Actor3: Message 2
+  Actor3-->>Actor1: Response`
+      }
+    };
+
+    window.loadPreset = function(presetName) {
+      const preset = presets[presetName];
+      if (!preset) {
+        showError('Preset Error', 'Preset not found.', null);
+        return;
+      }
+      
+      // Load the actor images
+      document.getElementById('actorConfig').value = JSON.stringify(preset.actors, null, 2);
+      
+      // Load the example code
+      document.getElementById('code').value = preset.code;
+      
+      // Clear upload previews
+      document.getElementById('previewImages').innerHTML = '';
+      
+      // Render the diagram
+      renderDiagram();
+      
+      showSuccess(`✓ Loaded "${preset.name}" preset!`);
+    };
+
+    window.downloadSVG = function() {
+      const svg = document.querySelector('#diagram svg');
+      if (!svg) {
+        showError('Download Error', 'Please render a diagram first before downloading!', null);
+        return;
+      }
+      
+      try {
+        // Clone the SVG to avoid modifying the displayed version
+        const svgClone = svg.cloneNode(true);
+        
+        // Get SVG source
+        const serializer = new XMLSerializer();
+        let svgString = serializer.serializeToString(svgClone);
+        
+        // Add XML declaration
+        svgString = '<?xml version="1.0" encoding="UTF-8"?>\n' + svgString;
+        
+        // Create blob and download
+        const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'sequence-diagram.svg';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        
+        showSuccess('✓ SVG downloaded successfully!');
+      } catch (err) {
+        showError('Download Error', 'Failed to download SVG file.', err.message);
+      }
+    };
+
+    window.downloadPNG = function() {
+      const svg = document.querySelector('#diagram svg');
+      if (!svg) {
+        showError('Download Error', 'Please render a diagram first before downloading!', null);
+        return;
+      }
+      
+      try {
+        // First, wait for all images in the SVG to load
+        const images = svg.querySelectorAll('image');
+        const imageLoadPromises = Array.from(images).map(img => {
+          return new Promise((resolve, reject) => {
+            const href = img.getAttribute('href') || img.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
+            if (!href) {
+              resolve();
+              return;
+            }
+            
+            // Create a test image to ensure it's loaded
+            const testImg = new Image();
+            testImg.onload = () => resolve();
+            testImg.onerror = () => resolve(); // Continue even if one image fails
+            testImg.src = href;
+          });
+        });
+        
+        Promise.all(imageLoadPromises).then(() => {
+          // All images loaded, now convert to PNG
+          convertSVGtoPNG(svg);
+        }).catch(err => {
+          showError('Image Loading Error', 
+            'Some images failed to load, but attempting PNG conversion anyway.',
+            err.message);
+          convertSVGtoPNG(svg);
+        });
+        
+      } catch (err) {
+        showError('Download Error', 'Failed to download PNG file.', err.message);
+      }
+    };
+
+    function convertSVGtoPNG(svg) {
+      try {
+        // Get SVG dimensions
+        const svgRect = svg.getBoundingClientRect();
+        const svgWidth = svgRect.width;
+        const svgHeight = svgRect.height;
+        
+        // Create canvas
+        const canvas = document.createElement('canvas');
+        const scale = 2; // Higher resolution
+        canvas.width = svgWidth * scale;
+        canvas.height = svgHeight * scale;
+        const ctx = canvas.getContext('2d');
+        ctx.scale(scale, scale);
+        
+        // Convert SVG to data URL by cloning and converting images
+        const svgClone = svg.cloneNode(true);
+        
+        // Convert the SVG to a blob URL
+        const serializer = new XMLSerializer();
+        let svgString = serializer.serializeToString(svgClone);
+        
+        // Ensure SVG has proper namespace
+        if (!svgString.includes('xmlns')) {
+          svgString = svgString.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
+        }
+        
+        const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        
+        // Create image from SVG
+        const img = new Image();
+        img.onload = function() {
+          try {
+            // Fill white background
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, svgWidth, svgHeight);
+            
+            // Draw image
+            ctx.drawImage(img, 0, 0, svgWidth, svgHeight);
+            
+            // Convert canvas to PNG and download
+            canvas.toBlob(function(blob) {
+              const pngUrl = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = pngUrl;
+              link.download = 'sequence-diagram.png';
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              URL.revokeObjectURL(pngUrl);
+              URL.revokeObjectURL(url);
+              
+              showSuccess('✓ PNG downloaded successfully!');
+            }, 'image/png');
+          } catch (err) {
+            showError('PNG Conversion Error', 'Failed to convert diagram to PNG.', err.message);
+            URL.revokeObjectURL(url);
+          }
+        };
+        
+        img.onerror = function() {
+          showError('PNG Conversion Error', 
+            'Error converting to PNG. This may be due to external image URLs causing CORS issues.',
+            'Try using local images (uploaded from your computer) or download as SVG instead. External URLs from other domains may be blocked by browser security.');
+          URL.revokeObjectURL(url);
+        };
+        
+        img.src = url;
+      } catch (err) {
+        showError('Conversion Error', 'Failed to convert to PNG.', err.message);
+      }
+    }
+
+    window.addUploadRow = function() {
+      const uploadRows = document.getElementById('uploadRows');
+      const newRow = document.createElement('div');
+      newRow.className = 'actor-upload-row';
+      newRow.innerHTML = `
+        <input type="text" placeholder="Actor Name (e.g., mastercard)" class="actor-name-input">
+        <input type="file" accept="image/*" class="actor-image-input">
+        <button onclick="this.parentElement.remove()">✕</button>
+      `;
+      uploadRows.appendChild(newRow);
+    };
+
+    window.processUploads = async function() {
+      const rows = document.querySelectorAll('.actor-upload-row');
+      const actorImages = {};
+      const previewContainer = document.getElementById('previewImages');
+      const errorDisplay = document.getElementById('errorDisplay');
+      
+      // Clear previous messages and previews
+      previewContainer.innerHTML = '';
+      errorDisplay.innerHTML = '';
+      
+      if (rows.length === 0) {
+        showError('Upload Error', 'No upload rows found. Click "+ Add Another Actor" to add images.', null);
+        return;
+      }
+      
+      let hasValidUploads = false;
+      
+      for (const row of rows) {
+        const nameInput = row.querySelector('.actor-name-input');
+        const fileInput = row.querySelector('.actor-image-input');
+        
+        const actorName = nameInput.value.trim();
+        const file = fileInput.files[0];
+        
+        if (actorName && file) {
+          try {
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+              showError('Invalid File Type', 
+                `File "${file.name}" is not a valid image file.`,
+                'Please upload PNG, JPG, GIF, or other image formats.');
+              continue;
+            }
+            
+            const dataUrl = await fileToDataUrl(file);
+            actorImages[actorName] = dataUrl;
+            hasValidUploads = true;
+            
+            // Add preview
+            const previewItem = document.createElement('div');
+            previewItem.className = 'preview-item';
+            previewItem.innerHTML = `
+              <img src="${dataUrl}" alt="${actorName}">
+              <span>${actorName}</span>
+            `;
+            previewContainer.appendChild(previewItem);
+          } catch (err) {
+            showError('Upload Error', 
+              `Error processing image for "${actorName}".`,
+              err.message);
+          }
+        }
+      }
+      
+      if (!hasValidUploads) {
+        showError('No Valid Uploads', 
+          'Please enter actor names and select image files for each row.',
+          null);
+        return;
+      }
+      
+      if (Object.keys(actorImages).length > 0) {
+        document.getElementById('actorConfig').value = JSON.stringify(actorImages, null, 2);
+        showSuccess(`✓ Successfully loaded ${Object.keys(actorImages).length} image(s)!`);
+        renderDiagram();
+      }
+    };
+
+    function fileToDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Initial render
+    renderDiagram();
+  </script>
+</body>
+</html>
