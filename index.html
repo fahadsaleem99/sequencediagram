@@ -202,22 +202,14 @@
       </div>
     </div>
 
-    <div class="section">
-      <h3>Actor Image Configuration (JSON)</h3>
-      <textarea id="actorConfig" placeholder='{"consumer": "https://www.sampleImage.com", "mastercard": "https://www.sampleImage2.com"}'></textarea>
-      <div class="help-text">
-        Auto-generated from uploaded images, or enter URLs manually<br>
-        <span class="example-link" onclick="loadPreset('avatars')">Load example with avatars</span>
-      </div>
-    </div>
 
     <div class="section">
       <h3>Mermaid Diagram Code</h3>
       <textarea id="code">sequenceDiagram
-  participant Alice
-  participant Bob
-  Alice->>Bob: Hello Bob!
-  Bob->>Alice: Hi Alice!</textarea>
+  participant consumer as Consumer
+  participant ma as Mastercard
+  consumer->>ma: Call#1
+  ma->>consumer: Response#1</textarea>
       <div class="help-text">
         Edit your Mermaid sequence diagram code
       </div>
