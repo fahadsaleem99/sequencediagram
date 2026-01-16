@@ -42,7 +42,7 @@
       resize: vertical;
     }
     #code {
-      height: 200px;
+      height: 250px;
     }
     #actorConfig {
       height: 120px;
@@ -192,7 +192,7 @@
 <body>
   <div class="container">
     <h1>🎨 Mermaid Sequence Diagram Editor</h1>
-    <p>Create sequence diagrams with custom actor images</p>
+    <p>Create sequence diagrams with custom actor images, spacing, and flow images</p>
 
     <div class="section">
       <h3>Upload Local Images</h3>
@@ -218,17 +218,39 @@
     </div>
 
     <div class="section">
+      <h3>Flow Images (Optional)</h3>
+      <div class="upload-section">
+        <p style="margin: 0 0 10px 0; font-size: 14px;">Upload images to use in your flow (converts to data URLs automatically)</p>
+        <div id="flowImageUploadRows">
+          <div class="actor-upload-row">
+            <input type="text" placeholder="Label (e.g., 'Token')" class="flow-label-input" style="flex: 1;">
+            <input type="file" accept="image/*" class="flow-file-input" style="flex: 1;">
+          </div>
+        </div>
+        <button class="button-small" onclick="addFlowImageUploadRow()">+ Add Another Image</button>
+        <button class="button-small" onclick="processFlowImageUploads()">📷 Load Flow Images</button>
+        <div class="preview-images" id="flowImagePreviews"></div>
+        <div class="help-text" style="margin-top: 10px;">
+          After loading, use in your code: <code>%%FLOWIMAGE: Label | {{Label}} | actor | position%%</code>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
       <h3>Mermaid Diagram Code</h3>
       <textarea id="code">sequenceDiagram
   participant consumer as Consumer
   participant ma as Mastercard
   consumer->>ma: Call#1
+  %%FLOWIMAGE: 🔐 Auth | https://via.placeholder.com/80/4CAF50/FFF?text=Token | consumer | on%%
   ma->>consumer: Response#1</textarea>
       <div class="help-text">
-        Edit your Mermaid sequence diagram code. <strong>Custom syntax:</strong>
-        <code>%%SPACE: pixels%%</code> adds vertical space between messages |
-        <code>%%FLOWIMAGE: Label | imageUrl%%</code> inserts image in flow
-        <br><span class="example-link" onclick="showExample()">Show example with spacing and flow images</span>
+        <strong>Custom syntax:</strong><br>
+        • <code>%%SPACE: pixels%%</code> - Add vertical space<br>
+        • <code>%%FLOWIMAGE: Label | imageUrl | alignment | position%%</code> - Insert image<br>
+        <small>Alignment: <code>center</code>, <code>left</code>, <code>right</code>, or actor name</small><br>
+        <small>Position: <code>between</code> (default), <code>on</code>, <code>leftOf:actor</code>, <code>rightOf:actor</code></small><br>
+        <span class="example-link" onclick="showExample()">Show example with all features</span>
       </div>
     </div>
 
@@ -241,9 +263,6 @@
         <input type="checkbox" id="showBottomActors" checked onchange="renderDiagram()">
         <span>Show actors at bottom</span>
       </label>
-    </div>
-    <div class="help-text" style="margin-top: 5px;">
-      <strong>Note:</strong> PNG export works best with locally uploaded images. External URLs may not appear due to browser security (CORS). Use SVG export as an alternative.
     </div>
 
     <div id="errorDisplay"></div>
@@ -264,6 +283,81 @@
       }
     });
 
+    // Storage for uploaded flow images
+    const uploadedFlowImages = {};
+
+    window.addFlowImageUploadRow = function() {
+      const flowImageUploadRows = document.getElementById('flowImageUploadRows');
+      const newRow = document.createElement('div');
+      newRow.className = 'actor-upload-row';
+      newRow.innerHTML = `
+        <input type="text" placeholder="Label (e.g., 'Receipt')" class="flow-label-input" style="flex: 1;">
+        <input type="file" accept="image/*" class="flow-file-input" style="flex: 1;">
+        <button onclick="this.parentElement.remove()">✕</button>
+      `;
+      flowImageUploadRows.appendChild(newRow);
+    };
+
+    window.processFlowImageUploads = async function() {
+      const rows = document.querySelectorAll('#flowImageUploadRows .actor-upload-row');
+      const previewContainer = document.getElementById('flowImagePreviews');
+      
+      previewContainer.innerHTML = '';
+      
+      if (rows.length === 0) {
+        showError('Upload Error', 'No upload rows found.', null);
+        return;
+      }
+      
+      let hasValidUploads = false;
+      
+      for (const row of rows) {
+        const labelInput = row.querySelector('.flow-label-input');
+        const fileInput = row.querySelector('.flow-file-input');
+        
+        const label = labelInput.value.trim();
+        const file = fileInput.files[0];
+        
+        if (label && file) {
+          try {
+            if (!file.type.startsWith('image/')) {
+              showError('Invalid File Type', 
+                `File "${file.name}" is not a valid image file.`,
+                'Please upload PNG, JPG, GIF, or other image formats.');
+              continue;
+            }
+            
+            const dataUrl = await fileToDataUrl(file);
+            uploadedFlowImages[label] = dataUrl;
+            hasValidUploads = true;
+            
+            const previewItem = document.createElement('div');
+            previewItem.className = 'preview-item';
+            previewItem.innerHTML = `
+              <img src="${dataUrl}" alt="${label}" style="border-radius: 4px;">
+              <span>${label}</span>
+            `;
+            previewContainer.appendChild(previewItem);
+          } catch (err) {
+            showError('Upload Error', 
+              `Error processing image for "${label}".`,
+              err.message);
+          }
+        }
+      }
+      
+      if (!hasValidUploads) {
+        showError('No Valid Uploads', 
+          'Please enter labels and select image files for each row.',
+          null);
+        return;
+      }
+      
+      if (Object.keys(uploadedFlowImages).length > 0) {
+        showSuccess(`✓ Successfully loaded ${Object.keys(uploadedFlowImages).length} flow image(s)! Use {{Label}} as the URL in your code.`);
+      }
+    };
+
     window.renderDiagram = async function () {
       const code = document.getElementById('code').value;
       const actorConfigText = document.getElementById('actorConfig').value.trim();
@@ -271,13 +365,11 @@
       const errorDisplay = document.getElementById('errorDisplay');
       const successDisplay = document.getElementById('successDisplay');
       
-      // Clear previous messages
       errorDisplay.innerHTML = '';
       successDisplay.style.display = 'none';
       
       let actorImages = {};
       
-      // Parse actor configuration
       if (actorConfigText) {
         try {
           actorImages = JSON.parse(actorConfigText);
@@ -289,11 +381,9 @@
         }
       }
       
-      // Parse inline flow images and spacing from Mermaid code
       const inlineFlowImages = parseInlineFlowImages(code);
       const inlineSpacings = parseInlineSpacing(code);
       
-      // Validate Mermaid code
       if (!code.trim()) {
         showError('Empty Diagram', 
           'Please enter Mermaid diagram code.',
@@ -302,14 +392,11 @@
       }
       
       try {
-        // Render the diagram with unique ID to avoid caching
         const uniqueId = 'mermaidDiagram-' + Date.now();
         const { svg } = await mermaid.render(uniqueId, code);
         diagram.innerHTML = svg;
         
-        // Apply custom images and spacing if configured
         if (Object.keys(actorImages).length > 0 || inlineFlowImages.length > 0 || inlineSpacings.length > 0) {
-          // Small delay to ensure DOM is ready
           setTimeout(() => {
             try {
               const svgElement = document.querySelector('#diagram svg');
@@ -318,18 +405,16 @@
                 applyCustomActorImages(actorImages);
               }
               
-              // Apply spacing adjustments first
               if (svgElement && inlineSpacings.length > 0) {
                 applyInlineSpacing(svgElement, inlineSpacings, code);
               }
               
-              // Apply flow images after spacing
               if (svgElement && inlineFlowImages.length > 0) {
                 applyFlowImagesInline(svgElement, inlineFlowImages, code);
               }
               
               const totalCustomizations = Object.keys(actorImages).length + inlineFlowImages.length + inlineSpacings.length;
-              showSuccess(`✓ Diagram rendered successfully with ${totalCustomizations} customization(s)!`);
+              showSuccess(`✓ Diagram rendered with ${totalCustomizations} customization(s)!`);
             } catch (err) {
               showError('Customization Error', 
                 'The diagram rendered, but there was an error applying customizations.',
@@ -348,16 +433,31 @@
     };
 
     function parseInlineFlowImages(mermaidCode) {
-      const flowImagePattern = /%%FLOWIMAGE:\s*([^|]+)\s*\|\s*(.+?)%%/gi;
+      const flowImagePattern = /%%FLOWIMAGE:\s*([^|]+)\s*\|\s*([^|]+?)(?:\s*\|\s*([^|]+?))?(?:\s*\|\s*(.+?))?%%/gi;
       const images = [];
       const lines = mermaidCode.split('\n');
       
       lines.forEach((line, lineIndex) => {
         const match = flowImagePattern.exec(line);
         if (match) {
+          let imageUrl = match[2].trim();
+          
+          // Replace {{Label}} with uploaded image data URL
+          const placeholderMatch = imageUrl.match(/\{\{(.+?)\}\}/);
+          if (placeholderMatch) {
+            const label = placeholderMatch[1].trim();
+            if (uploadedFlowImages[label]) {
+              imageUrl = uploadedFlowImages[label];
+            } else {
+              console.warn(`Flow image placeholder {{${label}}} not found in uploaded images`);
+            }
+          }
+          
           images.push({
             label: match[1].trim(),
-            imageUrl: match[2].trim(),
+            imageUrl: imageUrl,
+            alignment: match[3] ? match[3].trim() : 'center',
+            position: match[4] ? match[4].trim() : 'between',
             lineNumber: lineIndex + 1
           });
         }
@@ -392,7 +492,6 @@
       const codeLines = mermaidCode.split('\n');
       const messages = getAllMessagePositions(svg);
       
-      // Calculate which message index each spacing comes after
       const spacingAdjustments = spacings.map(spacing => {
         let messageCount = 0;
         
@@ -409,13 +508,11 @@
         };
       });
       
-      // Get all elements that need to be shifted
       const allPaths = svg.querySelectorAll('path, line');
       const allTexts = svg.querySelectorAll('text');
       const allRects = svg.querySelectorAll('rect');
       const allImages = svg.querySelectorAll('image');
       
-      // Apply spacing adjustments
       spacingAdjustments.forEach(adj => {
         if (adj.afterMessage > 0 && adj.afterMessage <= messages.length) {
           const cutoffY = messages[adj.afterMessage - 1].yPosition;
@@ -427,7 +524,6 @@
         }
       });
       
-      // Extend viewBox
       const viewBox = svg.getAttribute('viewBox');
       if (viewBox) {
         const [minX, minY, width, height] = viewBox.split(' ').map(parseFloat);
@@ -456,13 +552,7 @@
             });
             el.setAttribute('d', newD);
           }
-        } else if (el.tagName === 'text') {
-          const y = parseFloat(el.getAttribute('y'));
-          if (y > cutoffY) el.setAttribute('y', y + offset);
-        } else if (el.tagName === 'rect') {
-          const y = parseFloat(el.getAttribute('y'));
-          if (y > cutoffY) el.setAttribute('y', y + offset);
-        } else if (el.tagName === 'image') {
+        } else if (el.tagName === 'text' || el.tagName === 'rect' || el.tagName === 'image') {
           const y = parseFloat(el.getAttribute('y'));
           if (y > cutoffY) el.setAttribute('y', y + offset);
         }
@@ -473,6 +563,7 @@
       if (flowImages.length === 0) return;
       
       const messages = getAllMessagePositions(svg);
+      const actorPositions = getActorPositions(svg);
       const viewBox = svg.getAttribute('viewBox');
       let svgWidth = 400;
       let svgHeight = 300;
@@ -501,27 +592,82 @@
         }
         
         if (messageCount > 0 && messageCount <= messages.length) {
-          yPosition = messages[messageCount - 1].yPosition + 40;
-        } else if (messages.length > 0) {
-          yPosition = messages[messages.length - 1].yPosition + 40;
-        }
-        
-        if (yPosition) {
-          insertFlowImage(svg, flowImage, yPosition, svgWidth);
+          const message = messages[messageCount - 1];
+          yPosition = message.yPosition;
+          
+          // Adjust Y position based on position parameter
+          if (flowImage.position === 'on') {
+            yPosition = yPosition - 40; // On the message line
+          } else {
+            yPosition = yPosition + 30; // Between messages (default)
+          }
+          
+          insertFlowImage(svg, flowImage, yPosition, svgWidth, actorPositions);
           maxFlowImageY = Math.max(maxFlowImageY, yPosition + 120);
         }
       });
       
-      // Extend viewBox if needed
       if (maxFlowImageY > svgHeight) {
         const newHeight = maxFlowImageY + 20;
         svg.setAttribute('viewBox', `${viewBoxMinX} ${viewBoxMinY} ${svgWidth} ${newHeight}`);
       }
     }
 
+    function getActorPositions(svg) {
+      const positions = {};
+      const actorRects = svg.querySelectorAll('rect.actor-top');
+      
+      actorRects.forEach(rect => {
+        const name = rect.getAttribute('name');
+        const x = parseFloat(rect.getAttribute('x'));
+        const width = parseFloat(rect.getAttribute('width'));
+        const centerX = x + (width / 2);
+        
+        if (name) {
+          positions[name] = { x, width, centerX };
+          positions[name.toLowerCase()] = { x, width, centerX };
+        }
+      });
+      
+      const allTexts = svg.querySelectorAll('text');
+      allTexts.forEach(text => {
+        const label = text.textContent.trim();
+        if (!label) return;
+        
+        const textX = parseFloat(text.getAttribute('x'));
+        if (isNaN(textX)) return;
+        
+        let closestRect = null;
+        let minDistance = Infinity;
+        
+        actorRects.forEach(rect => {
+          const rectX = parseFloat(rect.getAttribute('x'));
+          const rectWidth = parseFloat(rect.getAttribute('width'));
+          const rectCenterX = rectX + (rectWidth / 2);
+          const distance = Math.abs(textX - rectCenterX);
+          
+          if (distance < minDistance && distance < 100) {
+            minDistance = distance;
+            closestRect = rect;
+          }
+        });
+        
+        if (closestRect) {
+          const x = parseFloat(closestRect.getAttribute('x'));
+          const width = parseFloat(closestRect.getAttribute('width'));
+          const centerX = x + (width / 2);
+          
+          positions[label] = { x, width, centerX };
+          positions[label.toLowerCase()] = { x, width, centerX };
+        }
+      });
+      
+      return positions;
+    }
+
     function getAllMessagePositions(svg) {
       const messages = [];
-      const messagePaths = svg.querySelectorAll('path[class*="messageLine"], line[class*="messageLine"], path.messageLine0, path.messageLine1, line.messageLine0, line.messageLine1');
+      const messagePaths = svg.querySelectorAll('path[class*="messageLine"], line[class*="messageLine"], path.messageLine0, path.messageLine1');
       
       messagePaths.forEach((path, index) => {
         let yPosition;
@@ -544,12 +690,50 @@
       return messages;
     }
 
-    function insertFlowImage(svg, flowImage, yPosition, svgWidth) {
+    function insertFlowImage(svg, flowImage, yPosition, svgWidth, actorPositions) {
       const imageSize = 80;
-      const imageX = (svgWidth - imageSize) / 2;
+      let imageX = (svgWidth - imageSize) / 2;
+      let textX = svgWidth / 2;
+      
+      const alignment = flowImage.alignment || 'center';
+      const position = flowImage.position || 'between';
+      const alignmentKey = alignment.toLowerCase();
+      
+      // Handle leftOf:actor and rightOf:actor
+      if (position.startsWith('leftOf:') || position.startsWith('rightOf:')) {
+        const parts = position.split(':');
+        const actorName = parts[1];
+        const actorPos = actorPositions[actorName] || actorPositions[actorName.toLowerCase()];
+        
+        if (actorPos) {
+          // Position relative to actor's center line (vertical line down the middle)
+          const halfImageSize = imageSize / 2;
+          const offset = 45; // Distance from center line
+          
+          if (position.startsWith('leftOf:')) {
+            imageX = actorPos.centerX - halfImageSize - offset;
+            textX = imageX + halfImageSize;
+          } else {
+            imageX = actorPos.centerX + offset - halfImageSize;
+            textX = imageX + halfImageSize;
+          }
+        }
+      }
+      // Handle regular alignment
+      else if (alignmentKey !== 'center' && alignmentKey !== 'left' && alignmentKey !== 'right' && actorPositions[alignmentKey]) {
+        const actorPos = actorPositions[alignmentKey];
+        imageX = actorPos.centerX - (imageSize / 2);
+        textX = actorPos.centerX;
+      } else if (alignmentKey === 'left') {
+        imageX = 10;
+        textX = 10 + (imageSize / 2);
+      } else if (alignmentKey === 'right') {
+        imageX = svgWidth - imageSize - 10;
+        textX = svgWidth - (imageSize / 2) - 10;
+      }
+      
       const imageY = yPosition;
       
-      // Create border/background
       const border = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
       border.setAttribute('x', imageX - 5);
       border.setAttribute('y', imageY - 5);
@@ -561,7 +745,6 @@
       border.setAttribute('stroke-width', '2');
       border.setAttribute('rx', '4');
       
-      // Create image
       const image = document.createElementNS('http://www.w3.org/2000/svg', 'image');
       image.setAttributeNS('http://www.w3.org/1999/xlink', 'href', flowImage.imageUrl);
       image.setAttribute('x', imageX);
@@ -570,10 +753,9 @@
       image.setAttribute('height', imageSize);
       image.setAttribute('class', 'flow-custom-image');
       
-      // Create label
       const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
       text.textContent = flowImage.label;
-      text.setAttribute('x', svgWidth / 2);
+      text.setAttribute('x', textX);
       text.setAttribute('y', imageY + imageSize + 15);
       text.setAttribute('text-anchor', 'middle');
       text.setAttribute('class', 'flow-image-label');
@@ -621,20 +803,20 @@
   participant Database
   
   User->>API: Login Request
-  %%SPACE: 50%%
-  %%FLOWIMAGE: 🔐 Token | https://via.placeholder.com/80/4CAF50/FFFFFF?text=Auth%%
-  %%SPACE: 50%%
+  %%SPACE: 40%%
+  %%FLOWIMAGE: 🔐 Token | https://via.placeholder.com/80/4CAF50/FFF?text=Auth | User | on%%
+  %%SPACE: 40%%
   
   API->>Database: Query User
-  Database-->>API: User Data
-  %%SPACE: 30%%
+  %%FLOWIMAGE: 📊 Cache | https://via.placeholder.com/80/2196F3/FFF?text=Data | left | leftOf:API%%
   
-  API->>Database: Update Login Time
-  Database-->>API: Success
+  Database-->>API: User Data
+  %%FLOWIMAGE: ✓ Valid | https://via.placeholder.com/80/FF9800/FFF?text=OK | right | rightOf:Database%%
+  
   API-->>User: Login Success`;
       
       document.getElementById('code').value = exampleCode;
-      showSuccess('✓ Example loaded! Click "Render Diagram" to see spacing and flow images.');
+      showSuccess('✓ Example loaded! Upload your own images and use {{Label}} placeholders.');
     };
 
     function applyCustomActorImages(actorImages) {
@@ -647,7 +829,6 @@
       const showBottomActors = document.getElementById('showBottomActors').checked;
       const actorRects = svg.querySelectorAll('rect.actor-top');
       
-      // Build a map of internal names to display labels
       const nameToLabel = new Map();
       const allTexts = svg.querySelectorAll('text');
       allTexts.forEach(text => {
@@ -730,7 +911,6 @@
         });
       });
       
-      // Hide original text elements
       const textElements = svg.querySelectorAll('text');
       textElements.forEach(textElement => {
         if (textElement.classList.contains('actor-custom-text-top') || 
@@ -747,7 +927,6 @@
         });
       });
       
-      // Adjust actor lines
       const actorLines = svg.querySelectorAll('line.actor-line');
       actorLines.forEach(line => {
         const lineName = line.getAttribute('name');
@@ -766,7 +945,6 @@
         }
       });
       
-      // Extend viewBox if bottom actors are shown
       if (showBottomActors && processedActors.size > 0) {
         const viewBox = svg.getAttribute('viewBox');
         if (viewBox) {
@@ -866,7 +1044,7 @@
       try {
         const images = svg.querySelectorAll('image');
         const imageLoadPromises = Array.from(images).map(img => {
-          return new Promise((resolve, reject) => {
+          return new Promise((resolve) => {
             const href = img.getAttribute('href') || img.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
             if (!href) {
               resolve();
@@ -881,11 +1059,6 @@
         });
         
         Promise.all(imageLoadPromises).then(() => {
-          convertSVGtoPNG(svg);
-        }).catch(err => {
-          showError('Image Loading Error', 
-            'Some images failed to load, but attempting PNG conversion anyway.',
-            err.message);
           convertSVGtoPNG(svg);
         });
         
@@ -947,7 +1120,7 @@
         img.onerror = function() {
           showError('PNG Conversion Error', 
             'Error converting to PNG. This may be due to external image URLs causing CORS issues.',
-            'Try using local images (uploaded from your computer) or download as SVG instead.');
+            'Try using local images or download as SVG instead.');
           URL.revokeObjectURL(url);
         };
         
