@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mermaid Sequence Diagram Editor with Custom Actors</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+      margin: 0;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h1 {
+      margin-top: 0;
+      color: #333;
+    }
+    .section {
+      margin-bottom: 25px;
+    }
+    .section h3 {
+      margin-top: 0;
+      color: #555;
+      font-size: 16px;
+    }
+    textarea { 
+      width: 100%; 
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      resize: vertical;
+    }
+    #code {
+      height: 200px;
+    }
+    #actorConfig {
+      height: 120px;
+    }
+    button { 
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-right: 10px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    button.secondary {
+      background: #6c757d;
+    }
+    button.secondary:hover {
+      background: #545b62;
+    }
+    #diagram { 
+      border: 1px solid #ddd; 
+      margin-top: 20px; 
+      padding: 20px;
+      min-height: 300px;
+      background: white;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    .help-text {
+      font-size: 13px;
+      color: #666;
+      margin-top: 5px;
+    }
+    .help-text code {
+      background: #f5f5f5;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      color: #c7254e;
+    }
+    .example-link {
+      color: #007bff;
+      cursor: pointer;
+      text-decoration: underline;
+      font-size: 13px;
+    }
+    .example-link:hover {
+      color: #0056b3;
+    }
+    .actor-image {
+      border-radius: 50%;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .upload-section {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+    }
+    .actor-upload-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .actor-upload-row input[type="text"] {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .actor-upload-row input[type="file"] {
+      flex: 2;
+      font-size: 13px;
+    }
+    .actor-upload-row button {
+      padding: 8px 12px;
+      margin: 0;
+    }
+    .preview-images {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+    .preview-item {
+      text-align: center;
+    }
+    .preview-item img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #ddd;
+      display: block;
+      margin-bottom: 5px;
+    }
+    .preview-item span {
+      font-size: 12px;
+      color: #666;
+    }
+    .button-small {
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+    .error-box {
+      background: #fee;
+      border: 1px solid #fcc;
+      border-radius: 4px;
+      padding: 15px;
+      margin: 15px 0;
+      color: #c33;
+    }
+    .error-box h4 {
+      margin: 0 0 10px 0;
+      color: #a00;
+    }
+    .error-box pre {
+      background: #fff;
+      padding: 10px;
+      border-radius: 3px;
+      overflow-x: auto;
+      font-size: 12px;
+      margin: 10px 0 0 0;
+    }
+    .success-box {
+      background: #efe;
+      border: 1px solid #cfc;
+      border-radius: 4px;
+      padding: 10px 15px;
+      margin: 15px 0;
+      color: #060;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎨 Mermaid Sequence Diagram Editor</h1>
+    <p>Create sequence diagrams with custom actor images</p>
+
+    <div class="section">
+      <h3>Upload Local Images</h3>
+      <div class="upload-section">
+        <div id="uploadRows">
+          <div class="actor-upload-row">
+            <input type="text" placeholder="Actor Name (e.g., consumer)" class="actor-name-input">
+            <input type="file" accept="image/*" class="actor-image-input">
+          </div>
+        </div>
+        <button class="button-small" onclick="addUploadRow()">+ Add Another Actor</button>
+        <button class="button-small" onclick="processUploads()">📁 Load Images</button>
+        <div class="preview-images" id="previewImages"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Actor Image Configuration (JSON)</h3>
+      <textarea id="actorConfig" placeholder='{"Alice": "https://i.pravatar.cc/150?img=1", "Bob": "https://i.pravatar.cc/150?img=2"}'></textarea>
+      <div class="help-text">
+        Auto-generated from uploaded images, or enter URLs manually
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Mermaid Diagram Code</h3>
+      <textarea id="code">sequenceDiagram
+  participant consumer as Consumer
+  participant ma as Mastercard
+  consumer->>ma: Call#1
+  ma->>consumer: Response#1</textarea>
+      <div class="help-text">
+        Edit your Mermaid sequence diagram code. <strong>Custom syntax:</strong>
+        <code>%%SPACE: pixels%%</code> adds vertical space between messages |
+        <code>%%FLOWIMAGE: Label | imageUrl%%</code> inserts image in flow
+        <br><span class="example-link" onclick="showExample()">Show example with spacing and flow images</span>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button onclick="renderDiagram()">🎨 Render Diagram</button>
+      <button class="secondary" onclick="clearImages()">Clear Images</button>
+      <button class="secondary" onclick="downloadSVG()">⬇️ Download SVG</button>
+      <button class="secondary" onclick="downloadPNG()">⬇️ Download PNG</button>
+      <label style="display: flex; align-items: center; gap: 8px; margin-left: 10px;">
+        <input type="checkbox" id="showBottomActors" checked onchange="renderDiagram()">
+        <span>Show actors at bottom</span>
+      </label>
+    </div>
+    <div class="help-text" style="margin-top: 5px;">
+      <strong>Note:</strong> PNG export works best with locally uploaded images. External URLs may not appear due to browser security (CORS). Use SVG export as an alternative.
+    </div>
+
+    <div id="errorDisplay"></div>
+    <div id="successDisplay" class="success-box"></div>
+    <div id="diagram"></div>
+  </div>
+
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11.6.0/dist/mermaid.esm.min.mjs';
+    
+    mermaid.initialize({ 
+      startOnLoad: false,
+      theme: 'default',
+      sequence: {
+        actorMargin: 80,
+        width: 150,
+        height: 100
+      }
+    });
+
+    window.renderDiagram = async function () {
+      const code = document.getElementById('code').value;
+      const actorConfigText = document.getElementById('actorConfig').value.trim();
+      const diagram = document.getElementById('diagram');
+      const errorDisplay = document.getElementById('errorDisplay');
+      const successDisplay = document.getElementById('successDisplay');
+      
+      // Clear previous messages
+      errorDisplay.innerHTML = '';
+      successDisplay.style.display = 'none';
+      
+      let actorImages = {};
+      
+      // Parse actor configuration
+      if (actorConfigText) {
+        try {
+          actorImages = JSON.parse(actorConfigText);
+        } catch (err) {
+          showError('JSON Configuration Error', 
+            'Invalid JSON in Actor Configuration. Please check your syntax.',
+            err.message);
+          return;
+        }
+      }
+      
+      // Parse inline flow images and spacing from Mermaid code
+      const inlineFlowImages = parseInlineFlowImages(code);
+      const inlineSpacings = parseInlineSpacing(code);
+      
+      // Validate Mermaid code
+      if (!code.trim()) {
+        showError('Empty Diagram', 
+          'Please enter Mermaid diagram code.',
+          'The code textarea is empty.');
+        return;
+      }
+      
+      try {
+        // Render the diagram with unique ID to avoid caching
+        const uniqueId = 'mermaidDiagram-' + Date.now();
+        const { svg } = await mermaid.render(uniqueId, code);
+        diagram.innerHTML = svg;
+        
+        // Apply custom images and spacing if configured
+        if (Object.keys(actorImages).length > 0 || inlineFlowImages.length > 0 || inlineSpacings.length > 0) {
+          // Small delay to ensure DOM is ready
+          setTimeout(() => {
+            try {
+              const svgElement = document.querySelector('#diagram svg');
+              
+              if (Object.keys(actorImages).length > 0) {
+                applyCustomActorImages(actorImages);
+              }
+              
+              // Apply spacing adjustments first
+              if (svgElement && inlineSpacings.length > 0) {
+                applyInlineSpacing(svgElement, inlineSpacings, code);
+              }
+              
+              // Apply flow images after spacing
+              if (svgElement && inlineFlowImages.length > 0) {
+                applyFlowImagesInline(svgElement, inlineFlowImages, code);
+              }
+              
+              const totalCustomizations = Object.keys(actorImages).length + inlineFlowImages.length + inlineSpacings.length;
+              showSuccess(`✓ Diagram rendered successfully with ${totalCustomizations} customization(s)!`);
+            } catch (err) {
+              showError('Customization Error', 
+                'The diagram rendered, but there was an error applying customizations.',
+                err.message);
+            }
+          }, 10);
+        } else {
+          showSuccess('✓ Diagram rendered successfully!');
+        }
+      } catch (err) {
+        showError('Mermaid Rendering Error', 
+          'There was an error rendering your Mermaid diagram. Please check your syntax.',
+          err.toString());
+        diagram.innerHTML = '';
+      }
+    };
+
+    function parseInlineFlowImages(mermaidCode) {
+      const flowImagePattern = /%%FLOWIMAGE:\s*([^|]+)\s*\|\s*(.+?)%%/gi;
+      const images = [];
+      const lines = mermaidCode.split('\n');
+      
+      lines.forEach((line, lineIndex) => {
+        const match = flowImagePattern.exec(line);
+        if (match) {
+          images.push({
+            label: match[1].trim(),
+            imageUrl: match[2].trim(),
+            lineNumber: lineIndex + 1
+          });
+        }
+        flowImagePattern.lastIndex = 0;
+      });
+      
+      return images;
+    }
+
+    function parseInlineSpacing(mermaidCode) {
+      const spacingPattern = /%%SPACE:\s*(\d+)%%/gi;
+      const spacings = [];
+      const lines = mermaidCode.split('\n');
+      
+      lines.forEach((line, lineIndex) => {
+        const match = spacingPattern.exec(line);
+        if (match) {
+          spacings.push({
+            lineNumber: lineIndex + 1,
+            height: parseInt(match[1])
+          });
+        }
+        spacingPattern.lastIndex = 0;
+      });
+      
+      return spacings;
+    }
+
+    function applyInlineSpacing(svg, spacings, mermaidCode) {
+      if (spacings.length === 0) return;
+      
+      const codeLines = mermaidCode.split('\n');
+      const messages = getAllMessagePositions(svg);
+      
+      // Calculate which message index each spacing comes after
+      const spacingAdjustments = spacings.map(spacing => {
+        let messageCount = 0;
+        
+        for (let i = 0; i < spacing.lineNumber - 1 && i < codeLines.length; i++) {
+          const line = codeLines[i].trim();
+          if (line.match(/->>|-->>|->>/)) {
+            messageCount++;
+          }
+        }
+        
+        return {
+          afterMessage: messageCount,
+          height: spacing.height
+        };
+      });
+      
+      // Get all elements that need to be shifted
+      const allPaths = svg.querySelectorAll('path, line');
+      const allTexts = svg.querySelectorAll('text');
+      const allRects = svg.querySelectorAll('rect');
+      const allImages = svg.querySelectorAll('image');
+      
+      // Apply spacing adjustments
+      spacingAdjustments.forEach(adj => {
+        if (adj.afterMessage > 0 && adj.afterMessage <= messages.length) {
+          const cutoffY = messages[adj.afterMessage - 1].yPosition;
+          
+          shiftElements(allPaths, cutoffY, adj.height);
+          shiftElements(allTexts, cutoffY, adj.height);
+          shiftElements(allRects, cutoffY, adj.height);
+          shiftElements(allImages, cutoffY, adj.height);
+        }
+      });
+      
+      // Extend viewBox
+      const viewBox = svg.getAttribute('viewBox');
+      if (viewBox) {
+        const [minX, minY, width, height] = viewBox.split(' ').map(parseFloat);
+        const totalSpacing = spacingAdjustments.reduce((sum, adj) => sum + adj.height, 0);
+        const newHeight = height + totalSpacing;
+        svg.setAttribute('viewBox', `${minX} ${minY} ${width} ${newHeight}`);
+      }
+    }
+
+    function shiftElements(elements, cutoffY, offset) {
+      elements.forEach(el => {
+        if (el.tagName === 'line') {
+          const y1 = parseFloat(el.getAttribute('y1'));
+          const y2 = parseFloat(el.getAttribute('y2'));
+          if (y1 > cutoffY) el.setAttribute('y1', y1 + offset);
+          if (y2 > cutoffY) el.setAttribute('y2', y2 + offset);
+        } else if (el.tagName === 'path') {
+          const d = el.getAttribute('d');
+          if (d) {
+            const newD = d.replace(/([MLHVCSQTAZmlhvcsqtaz])\s*([\d.-]+)[,\s]+([\d.-]+)/g, (match, cmd, x, y) => {
+              const yNum = parseFloat(y);
+              if (yNum > cutoffY) {
+                return `${cmd} ${x},${yNum + offset}`;
+              }
+              return match;
+            });
+            el.setAttribute('d', newD);
+          }
+        } else if (el.tagName === 'text') {
+          const y = parseFloat(el.getAttribute('y'));
+          if (y > cutoffY) el.setAttribute('y', y + offset);
+        } else if (el.tagName === 'rect') {
+          const y = parseFloat(el.getAttribute('y'));
+          if (y > cutoffY) el.setAttribute('y', y + offset);
+        } else if (el.tagName === 'image') {
+          const y = parseFloat(el.getAttribute('y'));
+          if (y > cutoffY) el.setAttribute('y', y + offset);
+        }
+      });
+    }
+
+    function applyFlowImagesInline(svg, flowImages, mermaidCode) {
+      if (flowImages.length === 0) return;
+      
+      const messages = getAllMessagePositions(svg);
+      const viewBox = svg.getAttribute('viewBox');
+      let svgWidth = 400;
+      let svgHeight = 300;
+      let viewBoxMinX = 0, viewBoxMinY = 0;
+      
+      if (viewBox) {
+        const [minX, minY, width, height] = viewBox.split(' ').map(parseFloat);
+        svgWidth = width;
+        svgHeight = height;
+        viewBoxMinX = minX;
+        viewBoxMinY = minY;
+      }
+      
+      let maxFlowImageY = 0;
+      
+      flowImages.forEach(flowImage => {
+        let yPosition;
+        const codeLines = mermaidCode.split('\n');
+        let messageCount = 0;
+        
+        for (let i = 0; i < flowImage.lineNumber - 1 && i < codeLines.length; i++) {
+          const line = codeLines[i].trim();
+          if (line.match(/->>|-->>|->>/)) {
+            messageCount++;
+          }
+        }
+        
+        if (messageCount > 0 && messageCount <= messages.length) {
+          yPosition = messages[messageCount - 1].yPosition + 40;
+        } else if (messages.length > 0) {
+          yPosition = messages[messages.length - 1].yPosition + 40;
+        }
+        
+        if (yPosition) {
+          insertFlowImage(svg, flowImage, yPosition, svgWidth);
+          maxFlowImageY = Math.max(maxFlowImageY, yPosition + 120);
+        }
+      });
+      
+      // Extend viewBox if needed
+      if (maxFlowImageY > svgHeight) {
+        const newHeight = maxFlowImageY + 20;
+        svg.setAttribute('viewBox', `${viewBoxMinX} ${viewBoxMinY} ${svgWidth} ${newHeight}`);
+      }
+    }
+
+    function getAllMessagePositions(svg) {
+      const messages = [];
+      const messagePaths = svg.querySelectorAll('path[class*="messageLine"], line[class*="messageLine"], path.messageLine0, path.messageLine1, line.messageLine0, line.messageLine1');
+      
+      messagePaths.forEach((path, index) => {
+        let yPosition;
+        
+        if (path.tagName === 'line') {
+          yPosition = parseFloat(path.getAttribute('y1'));
+        } else if (path.tagName === 'path') {
+          const d = path.getAttribute('d');
+          const match = d.match(/M\s*([\d.]+)[,\s]+([\d.]+)/);
+          if (match) {
+            yPosition = parseFloat(match[2]);
+          }
+        }
+        
+        if (yPosition) {
+          messages.push({ index: index + 1, yPosition });
+        }
+      });
+      
+      return messages;
+    }
+
+    function insertFlowImage(svg, flowImage, yPosition, svgWidth) {
+      const imageSize = 80;
+      const imageX = (svgWidth - imageSize) / 2;
+      const imageY = yPosition;
+      
+      // Create border/background
+      const border = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      border.setAttribute('x', imageX - 5);
+      border.setAttribute('y', imageY - 5);
+      border.setAttribute('width', imageSize + 10);
+      border.setAttribute('height', imageSize + 10);
+      border.setAttribute('fill', 'white');
+      border.setAttribute('fill-opacity', '0.95');
+      border.setAttribute('stroke', '#666');
+      border.setAttribute('stroke-width', '2');
+      border.setAttribute('rx', '4');
+      
+      // Create image
+      const image = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+      image.setAttributeNS('http://www.w3.org/1999/xlink', 'href', flowImage.imageUrl);
+      image.setAttribute('x', imageX);
+      image.setAttribute('y', imageY);
+      image.setAttribute('width', imageSize);
+      image.setAttribute('height', imageSize);
+      image.setAttribute('class', 'flow-custom-image');
+      
+      // Create label
+      const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      text.textContent = flowImage.label;
+      text.setAttribute('x', svgWidth / 2);
+      text.setAttribute('y', imageY + imageSize + 15);
+      text.setAttribute('text-anchor', 'middle');
+      text.setAttribute('class', 'flow-image-label');
+      text.style.fontSize = '11px';
+      text.style.fill = '#666';
+      text.style.fontWeight = 'bold';
+      
+      svg.appendChild(border);
+      svg.appendChild(image);
+      svg.appendChild(text);
+    }
+
+    function showError(title, message, details) {
+      const errorDisplay = document.getElementById('errorDisplay');
+      errorDisplay.innerHTML = `
+        <div class="error-box">
+          <h4>❌ ${title}</h4>
+          <p>${message}</p>
+          ${details ? `<pre>${escapeHtml(details)}</pre>` : ''}
+        </div>
+      `;
+      console.error(title + ':', details);
+    }
+
+    function showSuccess(message) {
+      const successDisplay = document.getElementById('successDisplay');
+      successDisplay.textContent = message;
+      successDisplay.style.display = 'block';
+      
+      setTimeout(() => {
+        successDisplay.style.display = 'none';
+      }, 3000);
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    window.showExample = function() {
+      const exampleCode = `sequenceDiagram
+  participant User
+  participant API
+  participant Database
+  
+  User->>API: Login Request
+  %%SPACE: 50%%
+  %%FLOWIMAGE: 🔐 Token | https://via.placeholder.com/80/4CAF50/FFFFFF?text=Auth%%
+  %%SPACE: 50%%
+  
+  API->>Database: Query User
+  Database-->>API: User Data
+  %%SPACE: 30%%
+  
+  API->>Database: Update Login Time
+  Database-->>API: Success
+  API-->>User: Login Success`;
+      
+      document.getElementById('code').value = exampleCode;
+      showSuccess('✓ Example loaded! Click "Render Diagram" to see spacing and flow images.');
+    };
+
+    function applyCustomActorImages(actorImages) {
+      const svg = document.querySelector('#diagram svg');
+      if (!svg) {
+        console.error('No SVG found!');
+        return;
+      }
+
+      const showBottomActors = document.getElementById('showBottomActors').checked;
+      const actorRects = svg.querySelectorAll('rect.actor-top');
+      
+      // Build a map of internal names to display labels
+      const nameToLabel = new Map();
+      const allTexts = svg.querySelectorAll('text');
+      allTexts.forEach(text => {
+        const label = text.textContent.trim();
+        const rects = svg.querySelectorAll('rect.actor-top, rect.actor-bottom');
+        rects.forEach(rect => {
+          const rectX = parseFloat(rect.getAttribute('x'));
+          const rectWidth = parseFloat(rect.getAttribute('width'));
+          const textX = parseFloat(text.getAttribute('x'));
+          
+          if (textX >= rectX && textX <= rectX + rectWidth) {
+            const internalName = rect.getAttribute('name');
+            if (internalName && !nameToLabel.has(internalName)) {
+              nameToLabel.set(internalName, label);
+            }
+          }
+        });
+      });
+      
+      const processedActors = new Set();
+      const actorLineAdjustments = new Map();
+      
+      actorRects.forEach((rect, index) => {
+        const actorName = rect.getAttribute('name');
+        const displayLabel = nameToLabel.get(actorName) || actorName;
+        
+        if (!actorName || processedActors.has(actorName)) return;
+        
+        let imageUrl = actorImages[actorName] || actorImages[displayLabel];
+        if (!imageUrl) return;
+        
+        processedActors.add(actorName);
+        
+        const x = parseFloat(rect.getAttribute('x'));
+        const y = parseFloat(rect.getAttribute('y'));
+        const width = parseFloat(rect.getAttribute('width'));
+        const height = parseFloat(rect.getAttribute('height'));
+        
+        rect.style.display = 'none';
+        
+        const imageSize = 60;
+        const imageX = x + (width - imageSize) / 2;
+        const imageY = y + 5;
+        const textY = imageY + imageSize + 18;
+        const textX = x + width / 2;
+        const lineStartY = textY + 20;
+        
+        createActorImageAndText(svg, displayLabel, imageUrl, imageX, imageY, imageSize, textX, textY, index, 'top');
+        
+        actorLineAdjustments.set(actorName, { 
+          startY: lineStartY,
+          endY: null
+        });
+        
+        const bottomRects = svg.querySelectorAll('rect.actor-bottom');
+        bottomRects.forEach(bottomRect => {
+          if (bottomRect.getAttribute('name') === actorName) {
+            bottomRect.style.display = 'none';
+            
+            if (showBottomActors) {
+              const bottomX = parseFloat(bottomRect.getAttribute('x'));
+              const bottomY = parseFloat(bottomRect.getAttribute('y'));
+              const bottomWidth = parseFloat(bottomRect.getAttribute('width'));
+              const extraMargin = 30;
+              
+              const bottomTextY = bottomY + height - 5 + extraMargin;
+              const bottomImageY = bottomTextY - 18 - imageSize;
+              const bottomImageX = bottomX + (bottomWidth - imageSize) / 2;
+              const bottomTextX = bottomX + bottomWidth / 2;
+              const lineEndY = bottomImageY - 10;
+              
+              createActorImageAndText(svg, displayLabel, imageUrl, bottomImageX, bottomImageY, imageSize, bottomTextX, bottomTextY, index, 'bottom');
+              
+              const adjustment = actorLineAdjustments.get(actorName);
+              if (adjustment) {
+                adjustment.endY = lineEndY;
+              }
+            }
+          }
+        });
+      });
+      
+      // Hide original text elements
+      const textElements = svg.querySelectorAll('text');
+      textElements.forEach(textElement => {
+        if (textElement.classList.contains('actor-custom-text-top') || 
+            textElement.classList.contains('actor-custom-text-bottom')) {
+          return;
+        }
+        
+        const textContent = textElement.textContent.trim();
+        processedActors.forEach(actorName => {
+          const displayLabel = nameToLabel.get(actorName) || actorName;
+          if (textContent === displayLabel) {
+            textElement.style.display = 'none';
+          }
+        });
+      });
+      
+      // Adjust actor lines
+      const actorLines = svg.querySelectorAll('line.actor-line');
+      actorLines.forEach(line => {
+        const lineName = line.getAttribute('name');
+        const adjustment = actorLineAdjustments.get(lineName);
+        
+        if (adjustment) {
+          const originalY2 = parseFloat(line.getAttribute('y2'));
+          line.setAttribute('y1', adjustment.startY);
+          
+          if (showBottomActors && adjustment.endY !== null) {
+            line.setAttribute('y2', adjustment.endY);
+          } else {
+            const extendedY2 = originalY2 + 20;
+            line.setAttribute('y2', extendedY2);
+          }
+        }
+      });
+      
+      // Extend viewBox if bottom actors are shown
+      if (showBottomActors && processedActors.size > 0) {
+        const viewBox = svg.getAttribute('viewBox');
+        if (viewBox) {
+          const [minX, minY, width, height] = viewBox.split(' ').map(parseFloat);
+          const newHeight = height + 30;
+          svg.setAttribute('viewBox', `${minX} ${minY} ${width} ${newHeight}`);
+        }
+      }
+    }
+
+    function createActorImageAndText(svg, actorName, imageUrl, imageX, imageY, imageSize, textX, textY, index, position) {
+      const image = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+      image.setAttributeNS('http://www.w3.org/1999/xlink', 'href', imageUrl);
+      image.setAttribute('x', imageX);
+      image.setAttribute('y', imageY);
+      image.setAttribute('width', imageSize);
+      image.setAttribute('height', imageSize);
+      image.setAttribute('class', `actor-custom-image-${position}`);
+      
+      const clipId = `clip-${actorName.replace(/\s/g, '-')}-${position}-${Date.now()}-${index}`;
+      let defs = svg.querySelector('defs');
+      if (!defs) {
+        defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+        svg.insertBefore(defs, svg.firstChild);
+      }
+      
+      const clipPath = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
+      clipPath.setAttribute('id', clipId);
+      
+      const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circle.setAttribute('cx', imageX + imageSize / 2);
+      circle.setAttribute('cy', imageY + imageSize / 2);
+      circle.setAttribute('r', imageSize / 2);
+      
+      clipPath.appendChild(circle);
+      defs.appendChild(clipPath);
+      image.setAttribute('clip-path', `url(#${clipId})`);
+      
+      const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      text.textContent = actorName;
+      text.setAttribute('y', textY);
+      text.setAttribute('x', textX);
+      text.setAttribute('text-anchor', 'middle');
+      text.setAttribute('class', `actor-custom-text-${position}`);
+      text.style.fontWeight = '600';
+      text.style.fontSize = '14px';
+      text.style.fill = '#333';
+      text.style.fontFamily = 'Arial, sans-serif';
+      
+      svg.appendChild(image);
+      svg.appendChild(text);
+    }
+
+    window.clearImages = function() {
+      document.getElementById('actorConfig').value = '';
+      document.getElementById('previewImages').innerHTML = '';
+      renderDiagram();
+      showSuccess('✓ Images cleared!');
+    };
+
+    window.downloadSVG = function() {
+      const svg = document.querySelector('#diagram svg');
+      if (!svg) {
+        showError('Download Error', 'Please render a diagram first before downloading!', null);
+        return;
+      }
+      
+      try {
+        const svgClone = svg.cloneNode(true);
+        const serializer = new XMLSerializer();
+        let svgString = serializer.serializeToString(svgClone);
+        svgString = '<?xml version="1.0" encoding="UTF-8"?>\n' + svgString;
+        
+        const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'sequence-diagram.svg';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        
+        showSuccess('✓ SVG downloaded successfully!');
+      } catch (err) {
+        showError('Download Error', 'Failed to download SVG file.', err.message);
+      }
+    };
+
+    window.downloadPNG = function() {
+      const svg = document.querySelector('#diagram svg');
+      if (!svg) {
+        showError('Download Error', 'Please render a diagram first before downloading!', null);
+        return;
+      }
+      
+      try {
+        const images = svg.querySelectorAll('image');
+        const imageLoadPromises = Array.from(images).map(img => {
+          return new Promise((resolve, reject) => {
+            const href = img.getAttribute('href') || img.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
+            if (!href) {
+              resolve();
+              return;
+            }
+            
+            const testImg = new Image();
+            testImg.onload = () => resolve();
+            testImg.onerror = () => resolve();
+            testImg.src = href;
+          });
+        });
+        
+        Promise.all(imageLoadPromises).then(() => {
+          convertSVGtoPNG(svg);
+        }).catch(err => {
+          showError('Image Loading Error', 
+            'Some images failed to load, but attempting PNG conversion anyway.',
+            err.message);
+          convertSVGtoPNG(svg);
+        });
+        
+      } catch (err) {
+        showError('Download Error', 'Failed to download PNG file.', err.message);
+      }
+    };
+
+    function convertSVGtoPNG(svg) {
+      try {
+        const svgRect = svg.getBoundingClientRect();
+        const svgWidth = svgRect.width;
+        const svgHeight = svgRect.height;
+        
+        const canvas = document.createElement('canvas');
+        const scale = 2;
+        canvas.width = svgWidth * scale;
+        canvas.height = svgHeight * scale;
+        const ctx = canvas.getContext('2d');
+        ctx.scale(scale, scale);
+        
+        const svgClone = svg.cloneNode(true);
+        const serializer = new XMLSerializer();
+        let svgString = serializer.serializeToString(svgClone);
+        
+        if (!svgString.includes('xmlns')) {
+          svgString = svgString.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
+        }
+        
+        const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        
+        const img = new Image();
+        img.onload = function() {
+          try {
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, svgWidth, svgHeight);
+            ctx.drawImage(img, 0, 0, svgWidth, svgHeight);
+            
+            canvas.toBlob(function(blob) {
+              const pngUrl = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = pngUrl;
+              link.download = 'sequence-diagram.png';
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              URL.revokeObjectURL(pngUrl);
+              URL.revokeObjectURL(url);
+              
+              showSuccess('✓ PNG downloaded successfully!');
+            }, 'image/png');
+          } catch (err) {
+            showError('PNG Conversion Error', 'Failed to convert diagram to PNG.', err.message);
+            URL.revokeObjectURL(url);
+          }
+        };
+        
+        img.onerror = function() {
+          showError('PNG Conversion Error', 
+            'Error converting to PNG. This may be due to external image URLs causing CORS issues.',
+            'Try using local images (uploaded from your computer) or download as SVG instead.');
+          URL.revokeObjectURL(url);
+        };
+        
+        img.src = url;
+      } catch (err) {
+        showError('Conversion Error', 'Failed to convert to PNG.', err.message);
+      }
+    }
+
+    window.addUploadRow = function() {
+      const uploadRows = document.getElementById('uploadRows');
+      const newRow = document.createElement('div');
+      newRow.className = 'actor-upload-row';
+      newRow.innerHTML = `
+        <input type="text" placeholder="Actor Name (e.g., mastercard)" class="actor-name-input">
+        <input type="file" accept="image/*" class="actor-image-input">
+        <button onclick="this.parentElement.remove()">✕</button>
+      `;
+      uploadRows.appendChild(newRow);
+    };
+
+    window.processUploads = async function() {
+      const rows = document.querySelectorAll('.actor-upload-row');
+      const actorImages = {};
+      const previewContainer = document.getElementById('previewImages');
+      const errorDisplay = document.getElementById('errorDisplay');
+      
+      previewContainer.innerHTML = '';
+      errorDisplay.innerHTML = '';
+      
+      if (rows.length === 0) {
+        showError('Upload Error', 'No upload rows found. Click "+ Add Another Actor" to add images.', null);
+        return;
+      }
+      
+      let hasValidUploads = false;
+      
+      for (const row of rows) {
+        const nameInput = row.querySelector('.actor-name-input');
+        const fileInput = row.querySelector('.actor-image-input');
+        
+        const actorName = nameInput.value.trim();
+        const file = fileInput.files[0];
+        
+        if (actorName && file) {
+          try {
+            if (!file.type.startsWith('image/')) {
+              showError('Invalid File Type', 
+                `File "${file.name}" is not a valid image file.`,
+                'Please upload PNG, JPG, GIF, or other image formats.');
+              continue;
+            }
+            
+            const dataUrl = await fileToDataUrl(file);
+            actorImages[actorName] = dataUrl;
+            hasValidUploads = true;
+            
+            const previewItem = document.createElement('div');
+            previewItem.className = 'preview-item';
+            previewItem.innerHTML = `
+              <img src="${dataUrl}" alt="${actorName}">
+              <span>${actorName}</span>
+            `;
+            previewContainer.appendChild(previewItem);
+          } catch (err) {
+            showError('Upload Error', 
+              `Error processing image for "${actorName}".`,
+              err.message);
+          }
+        }
+      }
+      
+      if (!hasValidUploads) {
+        showError('No Valid Uploads', 
+          'Please enter actor names and select image files for each row.',
+          null);
+        return;
+      }
+      
+      if (Object.keys(actorImages).length > 0) {
+        document.getElementById('actorConfig').value = JSON.stringify(actorImages, null, 2);
+        showSuccess(`✓ Successfully loaded ${Object.keys(actorImages).length} image(s)!`);
+        renderDiagram();
+      }
+    };
+
+    function fileToDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Initial render
+    renderDiagram();
+  </script>
+</body>
+</html>
