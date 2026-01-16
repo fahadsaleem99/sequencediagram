@@ -564,6 +564,13 @@
       
       const messages = getAllMessagePositions(svg);
       const actorPositions = getActorPositions(svg);
+      const parBlocks = getParBlockBoundaries(svg);
+      
+      console.log(`=== Flow Image Placement ===`);
+      console.log(`Total messages: ${messages.length}`);
+      console.log(`Total par blocks detected: ${parBlocks.length}`);
+      console.log(`Par blocks:`, parBlocks);
+      
       const viewBox = svg.getAttribute('viewBox');
       let svgWidth = 400;
       let svgHeight = 300;
@@ -584,26 +591,75 @@
         const codeLines = mermaidCode.split('\n');
         let messageCount = 0;
         
+        // Count actual message lines, skip %%SPACE and %%FLOWIMAGE directives
         for (let i = 0; i < flowImage.lineNumber - 1 && i < codeLines.length; i++) {
           const line = codeLines[i].trim();
+          
+          // Skip our custom directives
+          if (line.startsWith('%%SPACE:') || line.startsWith('%%FLOWIMAGE:')) {
+            continue;
+          }
+          
+          // Count message lines
           if (line.match(/->>|-->>|->>/)) {
             messageCount++;
           }
         }
         
+        console.log(`Flow image "${flowImage.label}" at line ${flowImage.lineNumber} - messageCount: ${messageCount}, total messages: ${messages.length}`);
+        
         if (messageCount > 0 && messageCount <= messages.length) {
           const message = messages[messageCount - 1];
           yPosition = message.yPosition;
+          
+          // Check if there's an 'end' statement right before the flowimage
+          let linesBack = 1;
+          let foundEnd = false;
+          while (linesBack < 10 && flowImage.lineNumber - linesBack > 0) {
+            const checkLine = codeLines[flowImage.lineNumber - 1 - linesBack].trim();
+            if (checkLine === 'end') {
+              foundEnd = true;
+              break;
+            }
+            if (checkLine.startsWith('%%SPACE:') || checkLine.startsWith('%%FLOWIMAGE:') || checkLine === '') {
+              linesBack++;
+              continue;
+            }
+            break;
+          }
+          
+          if (foundEnd) {
+            console.log(`Found 'end' before flow image at Y=${yPosition}`);
+            console.log(`Available par blocks:`, parBlocks);
+            
+            // Find the par block that contains this Y position
+            // Be lenient - check if Y is within or just slightly after the block
+            const containingBlock = parBlocks.find(block => 
+              yPosition >= block.topY - 20 && yPosition <= block.bottomY + 80
+            );
+            
+            if (containingBlock) {
+              console.log(`Found containing par block: topY=${containingBlock.topY}, bottomY=${containingBlock.bottomY}`);
+              yPosition = containingBlock.bottomY + 40; // Position well after the block
+            } else {
+              console.log(`No containing block found, adding standard spacing. Looking for block near Y=${yPosition}`);
+              yPosition += 150; // Large extra space after block end
+            }
+          }
           
           // Adjust Y position based on position parameter
           if (flowImage.position === 'on') {
             yPosition = yPosition - 40; // On the message line
           } else {
-            yPosition = yPosition + 30; // Between messages (default)
+            if (!foundEnd) {
+              yPosition = yPosition + 30; // Between messages (default)
+            }
           }
           
           insertFlowImage(svg, flowImage, yPosition, svgWidth, actorPositions);
           maxFlowImageY = Math.max(maxFlowImageY, yPosition + 120);
+        } else {
+          console.warn(`Could not place flow image "${flowImage.label}" - messageCount ${messageCount} out of range`);
         }
       });
       
@@ -688,6 +744,39 @@
       });
       
       return messages;
+    }
+
+    function getParBlockBoundaries(svg) {
+      const boundaries = [];
+      
+      // Look for all rectangles that could be par/loop/alt blocks
+      // These are typically larger rectangles that span multiple actors
+      const allRects = svg.querySelectorAll('rect');
+      
+      allRects.forEach(rect => {
+        const width = parseFloat(rect.getAttribute('width'));
+        const height = parseFloat(rect.getAttribute('height'));
+        const y = parseFloat(rect.getAttribute('y'));
+        const x = parseFloat(rect.getAttribute('x'));
+        const classes = rect.getAttribute('class') || '';
+        
+        // Par blocks are typically wide rectangles (spanning actors) and reasonably tall
+        // Skip actor boxes which are smaller and have specific classes
+        if (width > 200 && height > 50 && !classes.includes('actor')) {
+          const bottomY = y + height;
+          boundaries.push({
+            topY: y,
+            bottomY: bottomY,
+            height: height,
+            width: width,
+            x: x,
+            classes: classes
+          });
+          console.log(`Found potential par block: Y=${y}, height=${height}, width=${width}, class="${classes}"`);
+        }
+      });
+      
+      return boundaries.sort((a, b) => a.topY - b.topY);
     }
 
     function insertFlowImage(svg, flowImage, yPosition, svgWidth, actorPositions) {
