@@ -1,0 +1,328 @@
+COMPLETE DELEGATED SD-JWT:
+eyJhbGciOiJFUzI1NiIsInR5cCI6InNkK2p3dCIsImtpZCI6Im1hc3RlcmNhcmQtaXNzdWVyLWtleS0xIn0.eyJpc3MiOiJodHRwczovL3d3dy5tYXN0ZXJjYXJkLmNvbSIsInN1YiI6IkZ6WEF6aUhqVDNHUzFfWU9xNFVTckEwMDAwMDAwMDAwMDBVUyIsImlhdCI6MTc3MTAyNDM3NiwiZXhwIjoxODAyNTYwMzc2LCJ2Y3QiOiJhZ2VudGljX3VzZXJfa2V5IiwiY25mIjp7Imp3ayI6eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6IlRDQUVSMTladnUzT0hGNGo0VzR2ZlNWb0hJUDFJTGlsRGxzN3ZDZUdlbWMiLCJ5IjoiWnhqaVdXYlpNUUdIVldLVlE0aGJTSWlyc1ZmdWVjQ0U2dDRqVDlGMkhaUSJ9fSwiX3NkIjpbIjdyTjZSdVZVNEE3dTV6bGM1cF9HaWN1dDE4U1dvcGlWX0kxNFhfemNERHMiLCJmTzhQZXFrVXpYUG50eTUtWGZFblEtT1B4ZlJVMkxlcE1VLU1EVE5vc2NzIiwiR1ltRndPbGlHUjA5cDU5ejNDN0sxVzBtQkxYU0oxa2RuNnF5eWpEWnY0TSJdLCJfc2RfYWxnIjoic2hhLTI1NiJ9._S169_DDdOl29hSehnhrxFKH8T14sep2-PDlS_5frxkgfaW5vOAlUQb9kNsPvHfLbEpM_6LQPd1m_Gv_8bmAmw~WyJXVjZBbFpBT01YbDNzWW52RVJGNXVRIiwiZW1haWwiLCJ1c2VyQGV4YW1wbGUuY29tIl0~WyJuZmx1dUdsSEtlZUw5VDY3NGk2VjFRIiwic3JjQ2xpZW50SWQiLCJhMWIyYzMtZDRlNWY2Il0~WyJTZm96Zk9ZUFhvZ0taaEhmSDEtc1hRIiwiY3JlZGVudGlhbFByb3ZpZGVyIiwiWC1QYXkgV2FsbGV0Il0~~eyJhbGciOiJFUzI1NiIsInR5cCI6ImtiLXNkLWp3dCtrYiIsImtpZCI6InVzZXItZGV2aWNlLWtleS0xIn0.eyJub25jZSI6IlhCdFlWQklfdlVoT2tGb183OHFwVVEiLCJhdWQiOiJodHRwczovL3d3dy5hZ2VudC5jb20iLCJpYXQiOjE3NzEwMjQzNzYsInNkX2hhc2giOiJtZ2FyYzNBSkxwTnNramNObFFZc3FUR3N5RTExMHd1TExWZGdTZ0oyRTRvIiwiZGVsZWdhdGVfcGF5bG9hZCI6W3siLi4uIjoiU0swdVRGZFpZaWh6ZHJ3U2tyMHk2RUVFOUFPd3NzbjhoX2tneVdDNDNyUSJ9LHsiLi4uIjoiRnREOUhwd3F5TkNlOGx6Z242dGFfS2FoV2RTOUVsSFBGU0xib3NWVjFPWSJ9XSwiX3NkX2FsZyI6InNoYS0yNTYifQ.inDy5YWsxaO1n3yQmPbjHU8XvmKkbhTB3K5s5OJROSR17mNF_d2FUO2V-Stm-TGURaoso8o0W6Gkx2JLGvOhIg~WyJUeDA1aXlXLTBfbjg0cUVoUjdnNzVRIix7Im1lcmNoYW50TmFtZSI6IlRlbm5pcyBXYXJlaG91c2UiLCJtZXJjaGFudFVybCI6Imh0dHBzOi8vdGVubmlzLXdhcmVob3VzZS5jb20ifV0~WyJudXZUcVlyQmNhMFJhNW8tSEJEY2Z3Iix7Im1lcmNoYW50TmFtZSI6IkJhYm9sYXQiLCJtZXJjaGFudFVybCI6Imh0dHBzOi8vYmFib2xhdC5jb20ifV0~WyJqbWlZS3dQSkZFQkkzZ2ZLRU1uaFpRIiwicHJvbXB0U3VtbWFyeSIsIlB1cmNoYXNlIFRlbm5pcyBSYWNrZXQgd2l0aGluICQ0MDAiXQ~WyJ6eXdsR0pGV25yQXVmMHdYRHdzaVVnIix7InZjdCI6Im1hbmRhdGUuY2FydCIsImlzcyI6IkZ6WEF6aUhqVDNHUzFfWU9xNFVTckEwMDAwMDAwMDAwMDBVUyIsImlhdCI6MTc3MTAyNDM3NiwiZXhwIjoxNzcxMTEwNzc2LCJjbmYiOnsiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiZjgzT0ozRDJ4RjFCZzh2dWI5dExlMWdITXpWNzZlOFR1czl1UEh2UlZFVSIsInkiOiJ4X0ZFelJ1OW0zNkhMTl90dWU2NTlMTnBYVzZwQ3lTdGlrWWpLSVdJNWEwIn19LCJfc2QiOlsiZU0xMG1CY0ZKbG5qTE43Qko3VTYwS1lwUXg2SklSVlRoM0pqLXVNaU9POCJdLCJjb25zdHJhaW50cyI6W3sidHlwZSI6ImNhcnQuaW50ZW50IiwiYWxsb3dlZF9za3UiOlsiQkFCODYzNDUiLCJIRUEyMzEwMiJdLCJkZXNjcmlwdGlvbiI6IlRlbm5pcyBSYWNrZXQiLCJzaXplIjozLCJxdWFudGl0eSI6MSwiY29sb3IiOiJ3aGl0ZSIsImJyYW5kIjoiQmFib2xhdCIsIm1vZGVsIjoiUHVyZSBBZXJvIn1dfV0~WyJ0U0pVVlBzRDdkbV9GLU40Nko3ZGNnIix7InZjdCI6Im1hbmRhdGUucGF5bWVudCIsImlzcyI6IkZ6WEF6aUhqVDNHUzFfWU9xNFVTckEwMDAwMDAwMDAwMDBVUyIsImlhdCI6MTc3MTAyNDM3NiwiZXhwIjoxNzcxMTEwNzc2LCJjbmYiOnsiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiZjgzT0ozRDJ4RjFCZzh2dWI5dExlMWdITXpWNzZlOFR1czl1UEh2UlZFVSIsInkiOiJ4X0ZFelJ1OW0zNkhMTl90dWU2NTlMTnBYVzZwQ3lTdGlrWWpLSVdJNWEwIn19LCJjb25zdHJhaW50cyI6W3sidHlwZSI6InBheW1lbnQucGF5bWVudE1ldGhvZCIsInNyY0RpZ2l0YWxDYXJkSWQiOiJmMTk5YzNkZC03MTA2LTQ3OGItOWI1Zi03YWY5Y2E3MjUxNzAifSx7InR5cGUiOiJwYXltZW50Lm9yZGVyIiwiZXh0ZXJuYWxPcmRlcklkIjoiYWJjZC0xMjM0Iiwib3JkZXJFeGVjdXRpb25UeXBlIjoiQVVUT05PTU9VUyJ9LHsidHlwZSI6InBheW1lbnQucGF5ZWUiLCJhbGxvd2VkIjpbeyIuLi4iOiJTMkhTTUJMLUx5ZTVjWXhwQ2J5R1UtVHhyRGNMLWd2dmZnT2R4ZmRIM0ZNIn0seyIuLi4iOiJOZ0tsWTdibk1FdGdWWkhRU0FjVlI1TVBHUHd0QnVGYXBJSThVa1l3QWpnIn1dfSx7InR5cGUiOiJwYXltZW50LmJ1ZGdldCIsImN1cnJlbmN5IjoiVVNEIiwiYW1vdW50IjoiNDAwLjAifSx7InR5cGUiOiJwYXltZW50LnJlY3VycmVuY2UiLCJmcmVxdWVuY3kiOiJNT05USExZIiwic3RhcnREYXRlIjoiMDEtMDEtMjAyNiIsImVuZERhdGUiOiIxMi0wMS0yMDI2IiwicmVjdXJyZW5jZUNvdW50IjoiMTIifSx7InR5cGUiOiJwYXltZW50LnJlZmVyZW5jZSIsImNvbmRpdGlvbmFsQ2FydEhhc2giOnsic2FsdCI6Inp5d2xHSkZXbnJBdWYwd1hEd3NpVWciLCJ2YWx1ZSI6IkZ0RDlIcHdxeU5DZThsemduNnRhX0thaFdkUzlFbEhQRlNMYm9zVlYxT1kifSwiY29uZGl0aW9uYWxDYXJ0RGlzY2xvc3VyZUhhc2giOiJGdEQ5SHB3cXlOQ2U4bHpnbjZ0YV9LYWhXZFM5RWxIUEZTTGJvc1ZWMU9ZIn1dfV0~~eyJhbGciOiJFUzI1NiIsInR5cCI6ImtiLXNkLWp3dCIsImtpZCI6ImFnZW50LWtleS0xIiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiZjgzT0ozRDJ4RjFCZzh2dWI5dExlMWdITXpWNzZlOFR1czl1UEh2UlZFVSIsInkiOiJ4X0ZFelJ1OW0zNkhMTl90dWU2NTlMTnBYVzZwQ3lTdGlrWWpLSVdJNWEwIn19.eyJub25jZSI6IkJ5cFdsVUZNTmFYbEtWdFFDZVF3NGciLCJhdWQiOiJodHRwczovL3Rlbm5pcy13YXJlaG91c2UuY29tIiwic2RfaGFzaCI6InNfb3NCZ3ltYmVET2t1M01WVEZGUkkwQVFORzB2QUpCMVZYR3NZb2N5QVkiLCJpYXQiOjE3NzEwMjQzNzYsImRlbGVnYXRlX3BheWxvYWQiOlt7Ii4uLiI6IkVfQW8zQzRLdFhIampiMFBoS1pnTTduQTc3VnUtVFZyVUtmall1REFQQlUifSx7Ii4uLiI6IjhEWUhBcVZCZ2w0ZUV5V09BdzJMNEtKbDBaeUg1TjBjd2xJVUZickUzQlkifV0sIl9zZF9hbGciOiJzaGEtMjU2In0.SBwQwIvGzliO_E4eRxJciEYdk5kWmVmm_sesKNgmjR6CZg7Yx8B_5_6PaGYrTOeHtgbGfmLl-C5tVatAAQbpjQ~WyJTdWxtY2lnTHRIZFZqOTA2NkN4U2FnIix7InZjdCI6Im1hbmRhdGUuY2FydCIsImlzcyI6Imh0dHBzOi8vd3d3LmFnZW50LmNvbSIsImlhdCI6MTc3MTAyNDM3NiwiZXhwIjoxNzcxMDI0Njc2LCJjYXJ0Snd0IjoiZXlKaGJHY2lPaUpGVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0lzSW10cFpDSTZJbTFsY21Ob1lXNTBMV3RsZVMweEluMC5leUpwYzNNaU9pSm9kSFJ3Y3pvdkwzUmxibTVwY3kxM1lYSmxhRzkxYzJVdVkyOXRJaXdpYzNWaUlqb2lZMkZ5ZEY5amFHVmphMjkxZENJc0ltbGhkQ0k2TVRjM01UQXlORE0zTml3aVpYaHdJam94TnpjeE1ESTNPVGMyTENKallYSjBJanA3SW1sMFpXMXpJanBiZXlKemEzVWlPaUpDUVVJNE5qTTBOU0lzSW01aGJXVWlPaUpDWVdKdmJHRjBJRkIxY21VZ1FXVnlieUJVWlc1dWFYTWdVbUZqYTJWMElpd2ljMmw2WlNJNk15d2lZMjlzYjNJaU9pSjNhR2wwWlNJc0luRjFZVzUwYVhSNUlqb3hMQ0oxYm1sMFVISnBZMlVpT2pJM09TNDVPWDFkTENKemRXSlViM1JoYkNJNmV5SmhiVzkxYm5RaU9qSTNPUzQ1T1N3aVkzVnljbVZ1WTNsRGIyUmxJam9pVlZORUluMTlmUS51TVgxMDJ1LXQwbXkybDJhN3QtRGNnYzNlbUV0cnF1X0FUM1J5bHJPcWFZXzlCbEhPUGtMcjhpRzlTWHlqNlgxUGxJMVhVMmNNLW81ZzVmQ1E1bEQxZyJ9XQ~WyJzQkx3RFY1RzBtZFRONFoySjM5eWRBIix7InZjdCI6Im1hbmRhdGUucGF5bWVudCIsImlzcyI6Imh0dHBzOi8vd3d3LmFnZW50LmNvbSIsImlhdCI6MTc3MTAyNDM3NiwiZXhwIjoxNzcxMDI0Njc2LCJzcmNEaWdpdGFsQ2FyZElkIjoiZjE5OWMzZGQtNzEwNi00NzhiLTliNWYtN2FmOWNhNzI1MTcwIiwiZXh0ZXJuYWxPcmRlcklkIjoiYWJjZC0xMjM0Iiwib3JkZXJFeGVjdXRpb25UeXBlIjoiQVVUT05PTU9VUyIsInBheWVlIjp7InBheWVlTmFtZSI6IlRlbm5pcyBXYXJlaG91c2UiLCJwYXllZVVybCI6Imh0dHBzOi8vdGVubmlzLXdhcmVob3VzZS5jb20ifSwiZmluYWxBbW91bnQiOnsiY3VycmVuY3kiOiJVU0QiLCJhbW91bnQiOiIyNzkuOTkifSwicmVjdXJyZW5jZSI6eyJmcmVxdWVuY3kiOiJNT05USExZIiwic3RhcnREYXRlIjoiMDEtMDEtMjAyNiIsImVuZERhdGUiOiIxMi0wMS0yMDI2IiwicmVjdXJyZW5jZUNvdW50IjoiMTIifSwiY2FydEhhc2giOnsic2FsdCI6InFyZjA5LWZJRnBxMExnY2FGMEpza1EiLCJ2YWx1ZSI6IkZqOXN3UGtUZEx1WUcxSjdWYlRyRjdtRHJzcTk3Y2N6N1JEZU1vci1Bb28ifSwiY2FydERpc2Nsb3N1cmVIYXNoIjoiOERZSEFxVkJnbDRlRXlXT0F3Mkw0S0psMFp5SDVOMGN3bElVRmJyRTNCWSJ9XQ~
+
+====================================================================================================
+LAYER 1: ISSUER SD-JWT (Object Property Disclosures)
+====================================================================================================
+
+eyJhbGciOiJFUzI1NiIsInR5cCI6InNkK2p3dCIsImtpZCI6Im1hc3RlcmNhcmQtaXNzdWVyLWtleS0xIn0.eyJpc3MiOiJodHRwczovL3d3dy5tYXN0ZXJjYXJkLmNvbSIsInN1YiI6IkZ6WEF6aUhqVDNHUzFfWU9xNFVTckEwMDAwMDAwMDAwMDBVUyIsImlhdCI6MTc3MTAyNDM3NiwiZXhwIjoxODAyNTYwMzc2LCJ2Y3QiOiJhZ2VudGljX3VzZXJfa2V5IiwiY25mIjp7Imp3ayI6eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6IlRDQUVSMTladnUzT0hGNGo0VzR2ZlNWb0hJUDFJTGlsRGxzN3ZDZUdlbWMiLCJ5IjoiWnhqaVdXYlpNUUdIVldLVlE0aGJTSWlyc1ZmdWVjQ0U2dDRqVDlGMkhaUSJ9fSwiX3NkIjpbIjdyTjZSdVZVNEE3dTV6bGM1cF9HaWN1dDE4U1dvcGlWX0kxNFhfemNERHMiLCJmTzhQZXFrVXpYUG50eTUtWGZFblEtT1B4ZlJVMkxlcE1VLU1EVE5vc2NzIiwiR1ltRndPbGlHUjA5cDU5ejNDN0sxVzBtQkxYU0oxa2RuNnF5eWpEWnY0TSJdLCJfc2RfYWxnIjoic2hhLTI1NiJ9._S169_DDdOl29hSehnhrxFKH8T14sep2-PDlS_5frxkgfaW5vOAlUQb9kNsPvHfLbEpM_6LQPd1m_Gv_8bmAmw~WyJXVjZBbFpBT01YbDNzWW52RVJGNXVRIiwiZW1haWwiLCJ1c2VyQGV4YW1wbGUuY29tIl0~WyJuZmx1dUdsSEtlZUw5VDY3NGk2VjFRIiwic3JjQ2xpZW50SWQiLCJhMWIyYzMtZDRlNWY2Il0~WyJTZm96Zk9ZUFhvZ0taaEhmSDEtc1hRIiwiY3JlZGVudGlhbFByb3ZpZGVyIiwiWC1QYXkgV2FsbGV0Il0~
+
+DECODED JWT:
+----------------------------------------------------------------------------------------------------
+Header:
+{
+  "alg": "ES256",
+  "typ": "sd+jwt",
+  "kid": "mastercard-issuer-key-1"
+}
+
+Payload:
+{
+  "iss": "https://www.mastercard.com",
+  "sub": "FzXAziHjT3GS1_YOq4USrA000000000000US",
+  "iat": 1771024376,
+  "exp": 1802560376,
+  "vct": "agentic_user_key",
+  "cnf": {
+    "jwk": {
+      "kty": "EC",
+      "crv": "P-256",
+      "x": "TCAER19Zvu3OHF4j4W4vfSVoHIP1ILilDls7vCeGemc",
+      "y": "ZxjiWWbZMQGHVWKVQ4hbSIirsVfuecCE6t4jT9F2HZQ"
+    }
+  },
+  "_sd": [
+    "7rN6RuVU4A7u5zlc5p_Gicut18SWopiV_I14X_zcDDs",
+    "fO8PeqkUzXPnty5-XfEnQ-OPxfRU2LepMU-MDTNoscs",
+    "GYmFwOliGR09p59z3C7K1W0mBLXSJ1kdn6qyyjDZv4M"
+  ],
+  "_sd_alg": "sha-256"
+}
+
+DISCLOSURES:
+----------------------------------------------------------------------------------------------------
+email:
+  Salt: WV6AlZAOMXl3sYnvERF5uQ
+  Hash: 7rN6RuVU4A7u5zlc5p_Gicut18SWopiV_I14X_zcDDs
+  Decoded: [
+  "WV6AlZAOMXl3sYnvERF5uQ",
+  "email",
+  "user@example.com"
+]
+
+srcClientId:
+  Salt: nfluuGlHKeeL9T674i6V1Q
+  Hash: fO8PeqkUzXPnty5-XfEnQ-OPxfRU2LepMU-MDTNoscs
+  Decoded: [
+  "nfluuGlHKeeL9T674i6V1Q",
+  "srcClientId",
+  "a1b2c3-d4e5f6"
+]
+
+credentialProvider:
+  Salt: SfozfOYPXogKZhHfH1-sXQ
+  Hash: GYmFwOliGR09p59z3C7K1W0mBLXSJ1kdn6qyyjDZv4M
+  Decoded: [
+  "SfozfOYPXogKZhHfH1-sXQ",
+  "credentialProvider",
+  "X-Pay Wallet"
+]
+
+
+====================================================================================================
+LAYER 2: USER KB-SD-JWT (2 Conditional Mandates - Array Element Disclosures)
+====================================================================================================
+
+eyJhbGciOiJFUzI1NiIsInR5cCI6ImtiLXNkLWp3dCtrYiIsImtpZCI6InVzZXItZGV2aWNlLWtleS0xIn0.eyJub25jZSI6IlhCdFlWQklfdlVoT2tGb183OHFwVVEiLCJhdWQiOiJodHRwczovL3d3dy5hZ2VudC5jb20iLCJpYXQiOjE3NzEwMjQzNzYsInNkX2hhc2giOiJtZ2FyYzNBSkxwTnNramNObFFZc3FUR3N5RTExMHd1TExWZGdTZ0oyRTRvIiwiZGVsZWdhdGVfcGF5bG9hZCI6W3siLi4uIjoiU0swdVRGZFpZaWh6ZHJ3U2tyMHk2RUVFOUFPd3NzbjhoX2tneVdDNDNyUSJ9LHsiLi4uIjoiRnREOUhwd3F5TkNlOGx6Z242dGFfS2FoV2RTOUVsSFBGU0xib3NWVjFPWSJ9XSwiX3NkX2FsZyI6InNoYS0yNTYifQ.inDy5YWsxaO1n3yQmPbjHU8XvmKkbhTB3K5s5OJROSR17mNF_d2FUO2V-Stm-TGURaoso8o0W6Gkx2JLGvOhIg~WyJUeDA1aXlXLTBfbjg0cUVoUjdnNzVRIix7Im1lcmNoYW50TmFtZSI6IlRlbm5pcyBXYXJlaG91c2UiLCJtZXJjaGFudFVybCI6Imh0dHBzOi8vdGVubmlzLXdhcmVob3VzZS5jb20ifV0~WyJudXZUcVlyQmNhMFJhNW8tSEJEY2Z3Iix7Im1lcmNoYW50TmFtZSI6IkJhYm9sYXQiLCJtZXJjaGFudFVybCI6Imh0dHBzOi8vYmFib2xhdC5jb20ifV0~WyJqbWlZS3dQSkZFQkkzZ2ZLRU1uaFpRIiwicHJvbXB0U3VtbWFyeSIsIlB1cmNoYXNlIFRlbm5pcyBSYWNrZXQgd2l0aGluICQ0MDAiXQ~WyJ6eXdsR0pGV25yQXVmMHdYRHdzaVVnIix7InZjdCI6Im1hbmRhdGUuY2FydCIsImlzcyI6IkZ6WEF6aUhqVDNHUzFfWU9xNFVTckEwMDAwMDAwMDAwMDBVUyIsImlhdCI6MTc3MTAyNDM3NiwiZXhwIjoxNzcxMTEwNzc2LCJjbmYiOnsiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiZjgzT0ozRDJ4RjFCZzh2dWI5dExlMWdITXpWNzZlOFR1czl1UEh2UlZFVSIsInkiOiJ4X0ZFelJ1OW0zNkhMTl90dWU2NTlMTnBYVzZwQ3lTdGlrWWpLSVdJNWEwIn19LCJfc2QiOlsiZU0xMG1CY0ZKbG5qTE43Qko3VTYwS1lwUXg2SklSVlRoM0pqLXVNaU9POCJdLCJjb25zdHJhaW50cyI6W3sidHlwZSI6ImNhcnQuaW50ZW50IiwiYWxsb3dlZF9za3UiOlsiQkFCODYzNDUiLCJIRUEyMzEwMiJdLCJkZXNjcmlwdGlvbiI6IlRlbm5pcyBSYWNrZXQiLCJzaXplIjozLCJxdWFudGl0eSI6MSwiY29sb3IiOiJ3aGl0ZSIsImJyYW5kIjoiQmFib2xhdCIsIm1vZGVsIjoiUHVyZSBBZXJvIn1dfV0~WyJ0U0pVVlBzRDdkbV9GLU40Nko3ZGNnIix7InZjdCI6Im1hbmRhdGUucGF5bWVudCIsImlzcyI6IkZ6WEF6aUhqVDNHUzFfWU9xNFVTckEwMDAwMDAwMDAwMDBVUyIsImlhdCI6MTc3MTAyNDM3NiwiZXhwIjoxNzcxMTEwNzc2LCJjbmYiOnsiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiZjgzT0ozRDJ4RjFCZzh2dWI5dExlMWdITXpWNzZlOFR1czl1UEh2UlZFVSIsInkiOiJ4X0ZFelJ1OW0zNkhMTl90dWU2NTlMTnBYVzZwQ3lTdGlrWWpLSVdJNWEwIn19LCJjb25zdHJhaW50cyI6W3sidHlwZSI6InBheW1lbnQucGF5bWVudE1ldGhvZCIsInNyY0RpZ2l0YWxDYXJkSWQiOiJmMTk5YzNkZC03MTA2LTQ3OGItOWI1Zi03YWY5Y2E3MjUxNzAifSx7InR5cGUiOiJwYXltZW50Lm9yZGVyIiwiZXh0ZXJuYWxPcmRlcklkIjoiYWJjZC0xMjM0Iiwib3JkZXJFeGVjdXRpb25UeXBlIjoiQVVUT05PTU9VUyJ9LHsidHlwZSI6InBheW1lbnQucGF5ZWUiLCJhbGxvd2VkIjpbeyIuLi4iOiJTMkhTTUJMLUx5ZTVjWXhwQ2J5R1UtVHhyRGNMLWd2dmZnT2R4ZmRIM0ZNIn0seyIuLi4iOiJOZ0tsWTdibk1FdGdWWkhRU0FjVlI1TVBHUHd0QnVGYXBJSThVa1l3QWpnIn1dfSx7InR5cGUiOiJwYXltZW50LmJ1ZGdldCIsImN1cnJlbmN5IjoiVVNEIiwiYW1vdW50IjoiNDAwLjAifSx7InR5cGUiOiJwYXltZW50LnJlY3VycmVuY2UiLCJmcmVxdWVuY3kiOiJNT05USExZIiwic3RhcnREYXRlIjoiMDEtMDEtMjAyNiIsImVuZERhdGUiOiIxMi0wMS0yMDI2IiwicmVjdXJyZW5jZUNvdW50IjoiMTIifSx7InR5cGUiOiJwYXltZW50LnJlZmVyZW5jZSIsImNvbmRpdGlvbmFsQ2FydEhhc2giOnsic2FsdCI6Inp5d2xHSkZXbnJBdWYwd1hEd3NpVWciLCJ2YWx1ZSI6IkZ0RDlIcHdxeU5DZThsemduNnRhX0thaFdkUzlFbEhQRlNMYm9zVlYxT1kifSwiY29uZGl0aW9uYWxDYXJ0RGlzY2xvc3VyZUhhc2giOiJGdEQ5SHB3cXlOQ2U4bHpnbjZ0YV9LYWhXZFM5RWxIUEZTTGJvc1ZWMU9ZIn1dfV0~
+
+DECODED JWT:
+----------------------------------------------------------------------------------------------------
+Header:
+{
+  "alg": "ES256",
+  "typ": "kb-sd-jwt+kb",
+  "kid": "user-device-key-1"
+}
+
+Payload:
+{
+  "nonce": "XBtYVBI_vUhOkFo_78qpUQ",
+  "aud": "https://www.agent.com",
+  "iat": 1771024376,
+  "sd_hash": "mgarc3AJLpNskjcNlQYsqTGsyE110wuLLVdgSgJ2E4o",
+  "delegate_payload": [
+    {
+      "...": "SK0uTFdZYihzdrwSkr0y6EEE9AOwssn8h_kgyWC43rQ"
+    },
+    {
+      "...": "FtD9HpwqyNCe8lzgn6ta_KahWdS9ElHPFSLbosVV1OY"
+    }
+  ],
+  "_sd_alg": "sha-256"
+}
+
+DISCLOSURES:
+----------------------------------------------------------------------------------------------------
+merchant_0:
+  Salt: Tx05iyW-0_n84qEhR7g75Q
+  Hash: S2HSMBL-Lye5cYxpCbyGU-TxrDcL-gvvfgOdxfdH3FM
+  Decoded: [
+  "Tx05iyW-0_n84qEhR7g75Q",
+  {
+    "merchantName": "Tennis Warehouse",
+    "merchantUrl": "https://tennis-warehouse.com"
+  }
+]
+
+merchant_1:
+  Salt: nuvTqYrBca0Ra5o-HBDcfw
+  Hash: NgKlY7bnMEtgVZHQSAcVR5MPGPwtBuFapII8UkYwAjg
+  Decoded: [
+  "nuvTqYrBca0Ra5o-HBDcfw",
+  {
+    "merchantName": "Babolat",
+    "merchantUrl": "https://babolat.com"
+  }
+]
+
+prompt_summary:
+  Salt: jmiYKwPJFEBI3gfKEMnhZQ
+  Hash: eM10mBcFJlnjLN7BJ7U60KYpQx6JIRVTh3Jj-uMiOO8
+  Decoded: [
+  "jmiYKwPJFEBI3gfKEMnhZQ",
+  "promptSummary",
+  "Purchase Tennis Racket within $400"
+]
+
+conditional_cart:
+  Salt: zywlGJFWnrAuf0wXDwsiUg
+  Hash: FtD9HpwqyNCe8lzgn6ta_KahWdS9ElHPFSLbosVV1OY
+  Decoded: [
+  "zywlGJFWnrAuf0wXDwsiUg",
+  {
+    "vct": "mandate.cart",
+    "iss": "FzXAziHjT3GS1_YOq4USrA000000000000US",
+    "iat": 1771024376,
+    "exp": 1771110776,
+    "cnf": {
+      "jwk": {
+        "kty": "EC",
+        "crv": "P-256",
+        "x": "f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU",
+        "y": "x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0"
+      }
+    },
+    "_sd": [
+      "eM10mBcFJlnjLN7BJ7U60KYpQx6JIRVTh3Jj-uMiOO8"
+    ],
+    "constraints": [
+      {
+        "type": "cart.intent",
+        "allowed_sku": [
+          "BAB86345",
+          "HEA23102"
+        ],
+        "description": "Tennis Racket",
+        "size": 3,
+        "quantity": 1,
+        "color": "white",
+        "brand": "Babolat",
+        "model": "Pure Aero"
+      }
+    ]
+  }
+]
+
+conditional_payment:
+  Salt: tSJUVPsD7dm_F-N46J7dcg
+  Hash: SK0uTFdZYihzdrwSkr0y6EEE9AOwssn8h_kgyWC43rQ
+  Decoded: [
+  "tSJUVPsD7dm_F-N46J7dcg",
+  {
+    "vct": "mandate.payment",
+    "iss": "FzXAziHjT3GS1_YOq4USrA000000000000US",
+    "iat": 1771024376,
+    "exp": 1771110776,
+    "cnf": {
+      "jwk": {
+        "kty": "EC",
+        "crv": "P-256",
+        "x": "f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU",
+        "y": "x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0"
+      }
+    },
+    "constraints": [
+      {
+        "type": "payment.paymentMethod",
+        "srcDigitalCardId": "f199c3dd-7106-478b-9b5f-7af9ca725170"
+      },
+      {
+        "type": "payment.order",
+        "externalOrderId": "abcd-1234",
+        "orderExecutionType": "AUTONOMOUS"
+      },
+      {
+        "type": "payment.payee",
+        "allowed": [
+          {
+            "...": "S2HSMBL-Lye5cYxpCbyGU-TxrDcL-gvvfgOdxfdH3FM"
+          },
+          {
+            "...": "NgKlY7bnMEtgVZHQSAcVR5MPGPwtBuFapII8UkYwAjg"
+          }
+        ]
+      },
+      {
+        "type": "payment.budget",
+        "currency": "USD",
+        "amount": "400.0"
+      },
+      {
+        "type": "payment.recurrence",
+        "frequency": "MONTHLY",
+        "startDate": "01-01-2026",
+        "endDate": "12-01-2026",
+        "recurrenceCount": "12"
+      },
+      {
+        "type": "payment.reference",
+        "conditionalCartHash": {
+          "salt": "zywlGJFWnrAuf0wXDwsiUg",
+          "value": "FtD9HpwqyNCe8lzgn6ta_KahWdS9ElHPFSLbosVV1OY"
+        },
+        "conditionalCartDisclosureHash": "FtD9HpwqyNCe8lzgn6ta_KahWdS9ElHPFSLbosVV1OY"
+      }
+    ]
+  }
+]
+
+
+====================================================================================================
+LAYER 3: AGENT KB-SD-JWT (2 Final Mandates - Array Element Disclosures)
+====================================================================================================
+
+eyJhbGciOiJFUzI1NiIsInR5cCI6ImtiLXNkLWp3dCIsImtpZCI6ImFnZW50LWtleS0xIiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiZjgzT0ozRDJ4RjFCZzh2dWI5dExlMWdITXpWNzZlOFR1czl1UEh2UlZFVSIsInkiOiJ4X0ZFelJ1OW0zNkhMTl90dWU2NTlMTnBYVzZwQ3lTdGlrWWpLSVdJNWEwIn19.eyJub25jZSI6IkJ5cFdsVUZNTmFYbEtWdFFDZVF3NGciLCJhdWQiOiJodHRwczovL3Rlbm5pcy13YXJlaG91c2UuY29tIiwic2RfaGFzaCI6InNfb3NCZ3ltYmVET2t1M01WVEZGUkkwQVFORzB2QUpCMVZYR3NZb2N5QVkiLCJpYXQiOjE3NzEwMjQzNzYsImRlbGVnYXRlX3BheWxvYWQiOlt7Ii4uLiI6IkVfQW8zQzRLdFhIampiMFBoS1pnTTduQTc3VnUtVFZyVUtmall1REFQQlUifSx7Ii4uLiI6IjhEWUhBcVZCZ2w0ZUV5V09BdzJMNEtKbDBaeUg1TjBjd2xJVUZickUzQlkifV0sIl9zZF9hbGciOiJzaGEtMjU2In0.SBwQwIvGzliO_E4eRxJciEYdk5kWmVmm_sesKNgmjR6CZg7Yx8B_5_6PaGYrTOeHtgbGfmLl-C5tVatAAQbpjQ~WyJTdWxtY2lnTHRIZFZqOTA2NkN4U2FnIix7InZjdCI6Im1hbmRhdGUuY2FydCIsImlzcyI6Imh0dHBzOi8vd3d3LmFnZW50LmNvbSIsImlhdCI6MTc3MTAyNDM3NiwiZXhwIjoxNzcxMDI0Njc2LCJjYXJ0Snd0IjoiZXlKaGJHY2lPaUpGVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0lzSW10cFpDSTZJbTFsY21Ob1lXNTBMV3RsZVMweEluMC5leUpwYzNNaU9pSm9kSFJ3Y3pvdkwzUmxibTVwY3kxM1lYSmxhRzkxYzJVdVkyOXRJaXdpYzNWaUlqb2lZMkZ5ZEY5amFHVmphMjkxZENJc0ltbGhkQ0k2TVRjM01UQXlORE0zTml3aVpYaHdJam94TnpjeE1ESTNPVGMyTENKallYSjBJanA3SW1sMFpXMXpJanBiZXlKemEzVWlPaUpDUVVJNE5qTTBOU0lzSW01aGJXVWlPaUpDWVdKdmJHRjBJRkIxY21VZ1FXVnlieUJVWlc1dWFYTWdVbUZqYTJWMElpd2ljMmw2WlNJNk15d2lZMjlzYjNJaU9pSjNhR2wwWlNJc0luRjFZVzUwYVhSNUlqb3hMQ0oxYm1sMFVISnBZMlVpT2pJM09TNDVPWDFkTENKemRXSlViM1JoYkNJNmV5SmhiVzkxYm5RaU9qSTNPUzQ1T1N3aVkzVnljbVZ1WTNsRGIyUmxJam9pVlZORUluMTlmUS51TVgxMDJ1LXQwbXkybDJhN3QtRGNnYzNlbUV0cnF1X0FUM1J5bHJPcWFZXzlCbEhPUGtMcjhpRzlTWHlqNlgxUGxJMVhVMmNNLW81ZzVmQ1E1bEQxZyJ9XQ~WyJzQkx3RFY1RzBtZFRONFoySjM5eWRBIix7InZjdCI6Im1hbmRhdGUucGF5bWVudCIsImlzcyI6Imh0dHBzOi8vd3d3LmFnZW50LmNvbSIsImlhdCI6MTc3MTAyNDM3NiwiZXhwIjoxNzcxMDI0Njc2LCJzcmNEaWdpdGFsQ2FyZElkIjoiZjE5OWMzZGQtNzEwNi00NzhiLTliNWYtN2FmOWNhNzI1MTcwIiwiZXh0ZXJuYWxPcmRlcklkIjoiYWJjZC0xMjM0Iiwib3JkZXJFeGVjdXRpb25UeXBlIjoiQVVUT05PTU9VUyIsInBheWVlIjp7InBheWVlTmFtZSI6IlRlbm5pcyBXYXJlaG91c2UiLCJwYXllZVVybCI6Imh0dHBzOi8vdGVubmlzLXdhcmVob3VzZS5jb20ifSwiZmluYWxBbW91bnQiOnsiY3VycmVuY3kiOiJVU0QiLCJhbW91bnQiOiIyNzkuOTkifSwicmVjdXJyZW5jZSI6eyJmcmVxdWVuY3kiOiJNT05USExZIiwic3RhcnREYXRlIjoiMDEtMDEtMjAyNiIsImVuZERhdGUiOiIxMi0wMS0yMDI2IiwicmVjdXJyZW5jZUNvdW50IjoiMTIifSwiY2FydEhhc2giOnsic2FsdCI6InFyZjA5LWZJRnBxMExnY2FGMEpza1EiLCJ2YWx1ZSI6IkZqOXN3UGtUZEx1WUcxSjdWYlRyRjdtRHJzcTk3Y2N6N1JEZU1vci1Bb28ifSwiY2FydERpc2Nsb3N1cmVIYXNoIjoiOERZSEFxVkJnbDRlRXlXT0F3Mkw0S0psMFp5SDVOMGN3bElVRmJyRTNCWSJ9XQ~
+
+DECODED JWT:
+----------------------------------------------------------------------------------------------------
+Header:
+{
+  "alg": "ES256",
+  "typ": "kb-sd-jwt",
+  "kid": "agent-key-1",
+  "jwk": {
+    "kty": "EC",
+    "crv": "P-256",
+    "x": "f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU",
+    "y": "x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0"
+  }
+}
+
+Payload:
+{
+  "nonce": "BypWlUFMNaXlKVtQCeQw4g",
+  "aud": "https://tennis-warehouse.com",
+  "sd_hash": "s_osBgymbeDOku3MVTFFRI0AQNG0vAJB1VXGsYocyAY",
+  "iat": 1771024376,
+  "delegate_payload": [
+    {
+      "...": "E_Ao3C4KtXHjjb0PhKZgM7nA77Vu-TVrUKfjYuDAPBU"
+    },
+    {
+      "...": "8DYHAqVBgl4eEyWOAw2L4KJl0ZyH5N0cwlIUFbrE3BY"
+    }
+  ],
+  "_sd_alg": "sha-256"
+}
+
+DISCLOSURES:
+----------------------------------------------------------------------------------------------------
+final_cart:
+  Salt: SulmcigLtHdVj9066CxSag
+  Hash: 8DYHAqVBgl4eEyWOAw2L4KJl0ZyH5N0cwlIUFbrE3BY
+  Decoded: [
+  "SulmcigLtHdVj9066CxSag",
+  {
+    "vct": "mandate.cart",
+    "iss": "https://www.agent.com",
+    "iat": 1771024376,
+    "exp": 1771024676,
+    "cartJwt": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im1lcmNoYW50LWtleS0xIn0.eyJpc3MiOiJodHRwczovL3Rlbm5pcy13YXJlaG91c2UuY29tIiwic3ViIjoiY2FydF9jaGVja291dCIsImlhdCI6MTc3MTAyNDM3NiwiZXhwIjoxNzcxMDI3OTc2LCJjYXJ0Ijp7Iml0ZW1zIjpbeyJza3UiOiJCQUI4NjM0NSIsIm5hbWUiOiJCYWJvbGF0IFB1cmUgQWVybyBUZW5uaXMgUmFja2V0Iiwic2l6ZSI6MywiY29sb3IiOiJ3aGl0ZSIsInF1YW50aXR5IjoxLCJ1bml0UHJpY2UiOjI3OS45OX1dLCJzdWJUb3RhbCI6eyJhbW91bnQiOjI3OS45OSwiY3VycmVuY3lDb2RlIjoiVVNEIn19fQ.uMX102u-t0my2l2a7t-Dcgc3emEtrqu_AT3RylrOqaY_9BlHOPkLr8iG9SXyj6X1PlI1XU2cM-o5g5fCQ5lD1g"
+  }
+]
+
+final_order:
+  Salt: sBLwDV5G0mdTN4Z2J39ydA
+  Hash: E_Ao3C4KtXHjjb0PhKZgM7nA77Vu-TVrUKfjYuDAPBU
+  Decoded: [
+  "sBLwDV5G0mdTN4Z2J39ydA",
+  {
+    "vct": "mandate.payment",
+    "iss": "https://www.agent.com",
+    "iat": 1771024376,
+    "exp": 1771024676,
+    "srcDigitalCardId": "f199c3dd-7106-478b-9b5f-7af9ca725170",
+    "externalOrderId": "abcd-1234",
+    "orderExecutionType": "AUTONOMOUS",
+    "payee": {
+      "payeeName": "Tennis Warehouse",
+      "payeeUrl": "https://tennis-warehouse.com"
+    },
+    "finalAmount": {
+      "currency": "USD",
+      "amount": "279.99"
+    },
+    "recurrence": {
+      "frequency": "MONTHLY",
+      "startDate": "01-01-2026",
+      "endDate": "12-01-2026",
+      "recurrenceCount": "12"
+    },
+    "cartHash": {
+      "salt": "qrf09-fIFpq0LgcaF0JskQ",
+      "value": "Fj9swPkTdLuYG1J7VbTrF7mDrsq97ccz7RDeMor-Aoo"
+    },
+    "cartDisclosureHash": "8DYHAqVBgl4eEyWOAw2L4KJl0ZyH5N0cwlIUFbrE3BY"
+  }
+]
+
